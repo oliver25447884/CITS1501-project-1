@@ -8,7 +8,7 @@ SEASONS = {
         "description": "Birak is the hottest and driest time of the year. It is a season of warmth, long daylight hours, and strong sunshine. The land is often dry and the weather can be very hot.",
         "meaning": "This season marks the height of summer in the Noongar calendar, when people traditionally paid close attention to weather, water, and the changing landscape.",
     },
-    "Bunuru": {
+    "Bunur": {
         "months": "February to March",
         "description": "Bunuru is the second part of summer. It remains warm and can feel very intense, but the weather begins to shift as the season progresses.",
         "meaning": "This time is associated with long hot days, with the landscape beginning to prepare for the cooler months ahead.",
