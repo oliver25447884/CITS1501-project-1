@@ -8,7 +8,7 @@ SEASONS = {
         "description": "Birak is the hottest and driest time of the year. It is a season of warmth, long daylight hours, and strong sunshine. The land is often dry and the weather can be very hot.",
         "meaning": "This season marks the height of summer in the Noongar calendar, when people traditionally paid close attention to weather, water, and the changing landscape.",
     },
-    "Bunur": {
+    "Bunuru": {
         "months": "February to March",
         "description": "Bunuru is the second part of summer. It remains warm and can feel very intense, but the weather begins to shift as the season progresses.",
         "meaning": "This time is associated with long hot days, with the landscape beginning to prepare for the cooler months ahead.",
@@ -39,13 +39,78 @@ SEASONS = {
 class NoongarSeasonApp:
     def __init__(self, root):
         self.root = root
+        self.root.title("Login")
+        self.root.geometry("500x350")
+        self.root.minsize(400, 250)
+        self.root.configure(bg="#f4efe7")
+        self.password = "123"
+        self.current_frame = None
+
+        self.show_login_page()
+
+    def clear_page(self):
+        if self.current_frame is not None:
+            self.current_frame.destroy()
+        self.current_frame = tk.Frame(self.root, bg="#f4efe7")
+        self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+    def show_login_page(self):
+        self.clear_page()
+        self.root.title("Login")
+        self.root.geometry("500x350")
+
+        title = tk.Label(
+            self.current_frame,
+            text="The Noongar Seasons",
+            font=("Segoe UI", 22, "bold"),
+            fg="#2b2b2b",
+            bg="#f4efe7",
+        )
+        title.pack(pady=(0, 10))
+
+        self.info_label = tk.Label(
+            self.current_frame,
+            text="Enter password to continue.",
+            font=("Segoe UI", 11),
+            fg="#4a4a4a",
+            bg="#f4efe7",
+            wraplength=350,
+            justify="center",
+        )
+        self.info_label.pack(pady=(0, 10))
+
+        self.password_entry = tk.Entry(
+            self.current_frame,
+            font=("Segoe UI", 11),
+            show="*",
+            width=30,
+        )
+        self.password_entry.pack(pady=(0, 10))
+        self.password_entry.bind("<Return>", lambda event: self.check_password())
+
+        submit_button = ttk.Button(
+            self.current_frame,
+            text="Submit",
+            command=self.check_password,
+        )
+        submit_button.pack()
+
+    def check_password(self):
+        entered_password = self.password_entry.get()
+
+        if entered_password == self.password:
+            self.show_information_page()
+        else:
+            self.info_label.config(text="Password incorrect. Please try again.")
+
+    def show_information_page(self):
+        self.clear_page()
         self.root.title("Noongar Seasons")
         self.root.geometry("900x600")
         self.root.minsize(700, 500)
-        self.root.configure(bg="#f4efe7")
 
         title = tk.Label(
-            root,
+            self.current_frame,
             text="Noongar Seasons",
             font=("Segoe UI", 24, "bold"),
             fg="#2b2b2b",
@@ -55,7 +120,7 @@ class NoongarSeasonApp:
         title.pack()
 
         intro = tk.Label(
-            root,
+            self.current_frame,
             text="The six seasons recognised by Noongar people in the South West of Western Australia.",
             font=("Segoe UI", 11),
             fg="#4a4a4a",
@@ -65,7 +130,7 @@ class NoongarSeasonApp:
         )
         intro.pack(pady=(0, 12))
 
-        main_frame = tk.Frame(root, bg="#f4efe7")
+        main_frame = tk.Frame(self.current_frame, bg="#f4efe7")
         main_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
         left_panel = tk.Frame(main_frame, bg="#efe5d6", bd=1, relief="solid")
@@ -149,7 +214,7 @@ class NoongarSeasonApp:
         self.season_list.selection_set(0)
         self.update_details()
 
-        close_button = ttk.Button(root, text="Close", command=root.destroy)
+        close_button = ttk.Button(self.current_frame, text="Close", command=self.root.destroy)
         close_button.pack(pady=(0, 15))
 
     def update_details(self, event=None):
