@@ -1,4 +1,5 @@
 import tkinter as tk
+import math
 from tkinter import ttk
 
 
@@ -106,8 +107,8 @@ class NoongarSeasonApp:
     def show_information_page(self):
         self.clear_page()
         self.root.title("Noongar Seasons")
-        self.root.geometry("900x600")
-        self.root.minsize(700, 500)
+        self.root.geometry("850x650")
+        self.root.minsize(700, 600)
 
         title = tk.Label(
             self.current_frame,
@@ -130,105 +131,134 @@ class NoongarSeasonApp:
         )
         intro.pack(pady=(0, 12))
 
-        main_frame = tk.Frame(self.current_frame, bg="#f4efe7")
-        main_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+        canvas = tk.Canvas(
+            self.current_frame,
+            width=500,
+            height=470,
+            bg="#f4efe7",
+            highlightthickness=0,
+        )
+        canvas.pack(padx=20, pady=(0, 5))
 
-        left_panel = tk.Frame(main_frame, bg="#efe5d6", bd=1, relief="solid")
-        left_panel.pack(side="left", fill="y", padx=(0, 15))
+        center_x, center_y = 250, 225
+        outer_radius = 190
+        inner_radius = 82
+        colours = ["#d77a61", "#e2a653", "#c9b458", "#7596a8", "#77a889", "#9cbd82"]
+        season_names = list(SEASONS)
 
-        tk.Label(
-            left_panel,
+        canvas.create_oval(
+            center_x - outer_radius - 5,
+            center_y - outer_radius - 5,
+            center_x + outer_radius + 5,
+            center_y + outer_radius + 5,
+            outline="#d8c8b4",
+            width=2,
+        )
+
+        for index, season_name in enumerate(season_names):
+            start_angle = 90 - index * 60
+            arc_tag = f"season_{index}"
+            canvas.create_arc(
+                center_x - outer_radius,
+                center_y - outer_radius,
+                center_x + outer_radius,
+                center_y + outer_radius,
+                start=start_angle,
+                extent=-60,
+                fill=colours[index],
+                outline="#f4efe7",
+                width=3,
+                tags=arc_tag,
+            )
+
+            label_angle = math.radians(start_angle - 30)
+            label_x = center_x + 135 * math.cos(label_angle)
+            label_y = center_y - 135 * math.sin(label_angle)
+            canvas.create_text(
+                label_x,
+                label_y,
+                text=season_name,
+                font=("Segoe UI", 11, "bold"),
+                fill="#fffdfb",
+                tags=arc_tag,
+            )
+            canvas.tag_bind(arc_tag, "<Button-1>", lambda event, name=season_name: self.show_season_page(name))
+
+        canvas.create_oval(
+            center_x - inner_radius,
+            center_y - inner_radius,
+            center_x + inner_radius,
+            center_y + inner_radius,
+            fill="#f7f3ee",
+            outline="#d8c8b4",
+            width=2,
+        )
+        canvas.create_text(
+            center_x,
+            center_y - 12,
+            text="Noongar",
+            font=("Segoe UI", 15, "bold"),
+            fill="#24381d",
+        )
+        canvas.create_text(
+            center_x,
+            center_y + 14,
             text="Seasons",
-            font=("Segoe UI", 12, "bold"),
-            bg="#efe5d6",
-            padx=12,
-            pady=10,
-        ).pack(anchor="w")
-
-        self.season_list = tk.Listbox(
-            left_panel,
-            width=20,
-            height=18,
             font=("Segoe UI", 11),
-            bg="#fffdfb",
-            fg="#1d1d1d",
-            selectbackground="#c5d6b7",
-            selectforeground="#1d1d1d",
-            activestyle="none",
+            fill="#4e5c46",
         )
-        self.season_list.pack(fill="both", expand=True, padx=10, pady=(0, 10))
-
-        for season_name in SEASONS:
-            self.season_list.insert(tk.END, season_name)
-
-        self.season_list.bind("<<ListboxSelect>>", self.update_details)
-
-        right_panel = tk.Frame(main_frame, bg="#f7f3ee", bd=1, relief="solid")
-        right_panel.pack(side="left", fill="both", expand=True)
-
-        self.season_name = tk.Label(
-            right_panel,
-            text="",
-            font=("Segoe UI", 20, "bold"),
-            bg="#f7f3ee",
-            fg="#24381d",
-            pady=10,
-        )
-        self.season_name.pack(anchor="w", padx=20)
-
-        self.season_months = tk.Label(
-            right_panel,
-            text="",
-            font=("Segoe UI", 11, "bold"),
-            bg="#f7f3ee",
-            fg="#4e5c46",
-            anchor="w",
-            justify="left",
-        )
-        self.season_months.pack(anchor="w", padx=20, pady=(0, 10))
-
-        self.description = tk.Label(
-            right_panel,
-            text="",
-            font=("Segoe UI", 11),
-            bg="#f7f3ee",
-            fg="#2b2b2b",
-            justify="left",
-            wraplength=500,
-            anchor="w",
-        )
-        self.description.pack(anchor="w", padx=20, pady=(0, 14))
-
-        self.meaning = tk.Label(
-            right_panel,
-            text="",
-            font=("Segoe UI", 10, "italic"),
-            bg="#f7f3ee",
-            fg="#414141",
-            justify="left",
-            wraplength=500,
-            anchor="w",
-        )
-        self.meaning.pack(anchor="w", padx=20)
-
-        self.season_list.selection_set(0)
-        self.update_details()
 
         close_button = ttk.Button(self.current_frame, text="Close", command=self.root.destroy)
         close_button.pack(pady=(0, 15))
 
-    def update_details(self, event=None):
-        selection = self.season_list.curselection()
-        if not selection:
-            return
+    def show_season_page(self, season_name):
+        self.clear_page()
+        self.root.title(f"{season_name} | Noongar Seasons")
+        self.root.geometry("700x500")
 
-        season_name = self.season_list.get(selection[0])
         season = SEASONS[season_name]
 
-        self.season_name.config(text=season_name)
-        self.season_months.config(text=f"Months: {season['months']}")
-        self.description.config(text=season['description'])
-        self.meaning.config(text=f"Meaning: {season['meaning']}")
+        tk.Label(
+            self.current_frame,
+            text=season_name,
+            font=("Segoe UI", 26, "bold"),
+            bg="#f4efe7",
+            fg="#24381d",
+        ).pack(pady=(25, 8))
+        tk.Label(
+            self.current_frame,
+            text=f"Months: {season['months']}",
+            font=("Segoe UI", 12, "bold"),
+            bg="#f4efe7",
+            fg="#4e5c46",
+        ).pack(pady=(0, 25))
+
+        detail_panel = tk.Frame(self.current_frame, bg="#f7f3ee", bd=1, relief="solid")
+        detail_panel.pack(fill="both", expand=True, padx=45, pady=(0, 25))
+        tk.Label(
+            detail_panel,
+            text=season["description"],
+            font=("Segoe UI", 12),
+            bg="#f7f3ee",
+            fg="#2b2b2b",
+            wraplength=540,
+            justify="left",
+        ).pack(anchor="w", padx=25, pady=(30, 20))
+        tk.Label(
+            detail_panel,
+            text=f"Meaning: {season['meaning']}",
+            font=("Segoe UI", 11, "italic"),
+            bg="#f7f3ee",
+            fg="#414141",
+            wraplength=540,
+            justify="left",
+        ).pack(anchor="w", padx=25)
+
+        ttk.Button(
+            self.current_frame,
+            text="Back to seasons",
+            command=self.show_information_page,
+        ).pack(pady=(0, 20))
 
 
 if __name__ == "__main__":
