@@ -1,6 +1,7 @@
 import tkinter as tk
 import math
 from tkinter import ttk
+from Moduals.Question_Modual import REGION_QUESTIONS
 
 
 SEASONS = {
@@ -35,27 +36,6 @@ SEASONS = {
         "meaning": "This is a time of growth, abundance, and the return of energy across the environment as the warmer season approaches.",
     },
 }
-
-
-# Add or edit region questions and answers in this list.
-REGION_QUESTIONS = [
-    {
-        "question": "What Noongar region do I live in if I live in Perth?",
-        "answer": "Perth is generally part of the Whadjuk Noongar region.",
-    },
-    {
-        "question": "What Noongar region do I live in if I live in Bunbury?",
-        "answer": "Bunbury is generally part of the Wardandi Noongar region.",
-    },
-    {
-        "question": "What Noongar region do I live in if I live in Albany?",
-        "answer": "Albany is generally part of the Menang Noongar region.",
-    },
-    {
-        "question": "What Noongar region do I live in if I live in the Wheatbelt?",
-        "answer": "Many parts of the Wheatbelt are associated with the Ballardong Noongar region.",
-    },
-]
 
 
 class NoongarSeasonApp:
