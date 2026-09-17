@@ -1,11 +1,11 @@
 # Add or edit region questions and answers in this list.
 REGION_QUESTIONS = [
     {
-        "question": "What Noongar region do I live in if I live in Perth?",
-        "answer": "Perth is generally part of the Whadjuk Noongar region.",
+        "question": "What Noongar region do I live in?",
+        "answer": "Click on your suburb and find out!.",
     },
 ]
-
+#An interactive map of perths subburbs will be placed here
 
 def display_question_results(results_frame, questions, open_question):
     import tkinter as tk
