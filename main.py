@@ -165,7 +165,7 @@ class NoongarSeasonApp:
         region_panel.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         tk.Label(
             region_panel,
-            text="have any questions?",
+            text="Explore some questions",
             font=("Segoe UI", 16, "bold"),
             fg="#24381d",
             bg="#f7f3ee",
