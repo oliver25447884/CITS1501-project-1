@@ -29,3 +29,4 @@ def display_question_results(results_frame, questions, open_question):
                 text=item["question"],
                 command=lambda question=item: open_question(question),
             ).pack(fill="x", padx=10, pady=5)
+
