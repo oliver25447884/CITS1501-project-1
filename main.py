@@ -4,7 +4,6 @@ from tkinter import ttk
 from Moduals.Question_Modual import (
     REGION_QUESTIONS,
     display_question_results,
-    search_questions,
 )
 
 
@@ -173,33 +172,16 @@ class NoongarSeasonApp:
             wraplength=300,
         ).pack(pady=(25, 12))
 
-        search_frame = tk.Frame(region_panel, bg="#f7f3ee")
-        search_frame.pack(fill="x", padx=20)
-        self.region_search_entry = tk.Entry(search_frame, font=("Segoe UI", 10))
-        self.region_search_entry.pack(side="left", fill="x", expand=True)
-        self.region_search_entry.bind(
-            "<KeyRelease>", lambda event: self.search_region_questions()
-        )
-        ttk.Button(
-            search_frame,
-            text="Search",
-            command=self.search_region_questions,
-        ).pack(side="left", padx=(6, 0))
-
-        self.region_results = tk.Text(
+        self.region_results = tk.Frame(
             region_panel,
-            height=12,
-            font=("Segoe UI", 10),
             bg="#ffffff",
-            fg="#2b2b2b",
-            wrap="word",
-            state="disabled",
+            height=12,
         )
         self.region_results.pack(fill="both", expand=True, padx=20, pady=12)
         display_question_results(
             self.region_results,
             REGION_QUESTIONS,
-            self.root,
+            self.show_question_page,
         )
 
         ttk.Button(
@@ -208,13 +190,45 @@ class NoongarSeasonApp:
             command=self.show_login_page,
         ).pack(pady=(12, 0))
 
-    def search_region_questions(self):
-        matching_questions = search_questions(self.region_search_entry.get())
-        display_question_results(
-            self.region_results,
-            matching_questions,
-            self.root,
+    def show_question_page(self, question):
+        self.clear_page()
+        self.root.title("Question information")
+        self.root.geometry("700x500")
+        self.root.minsize(550, 400)
+
+        tk.Label(
+            self.current_frame,
+            text=question["question"],
+            font=("Segoe UI", 20, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+            wraplength=600,
+            justify="center",
+        ).pack(padx=30, pady=(45, 25))
+
+        answer_panel = tk.Frame(
+            self.current_frame,
+            bg="#f7f3ee",
+            bd=1,
+            relief="solid",
         )
+        answer_panel.pack(fill="both", expand=True, padx=45, pady=(0, 25))
+
+        tk.Label(
+            answer_panel,
+            text=question["answer"],
+            font=("Segoe UI", 13),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+            wraplength=540,
+            justify="left",
+        ).pack(anchor="w", padx=30, pady=35)
+
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 20))
 
     def show_information_page(self):
         self.clear_page()
