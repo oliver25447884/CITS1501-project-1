@@ -1,7 +1,11 @@
 import tkinter as tk
 import math
 from tkinter import ttk
-from Moduals.Question_Modual import REGION_QUESTIONS
+from Moduals.Question_Modual import (
+    REGION_QUESTIONS,
+    display_question_results,
+    search_questions,
+)
 
 
 SEASONS = {
@@ -162,7 +166,7 @@ class NoongarSeasonApp:
         region_panel.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         tk.Label(
             region_panel,
-            text="What Noongar region do I live in?",
+            text="have any questions?",
             font=("Segoe UI", 16, "bold"),
             fg="#24381d",
             bg="#f7f3ee",
@@ -192,7 +196,11 @@ class NoongarSeasonApp:
             state="disabled",
         )
         self.region_results.pack(fill="both", expand=True, padx=20, pady=12)
-        self.display_region_questions(REGION_QUESTIONS)
+        display_question_results(
+            self.region_results,
+            REGION_QUESTIONS,
+            self.root,
+        )
 
         ttk.Button(
             self.current_frame,
@@ -201,29 +209,12 @@ class NoongarSeasonApp:
         ).pack(pady=(12, 0))
 
     def search_region_questions(self):
-        search_term = self.region_search_entry.get().strip().lower()
-        matching_questions = [
-            item
-            for item in REGION_QUESTIONS
-            if search_term in item["question"].lower()
-            or search_term in item["answer"].lower()
-        ]
-        self.display_region_questions(matching_questions)
-
-    def display_region_questions(self, questions):
-        self.region_results.config(state="normal")
-        self.region_results.delete("1.0", tk.END)
-
-        if not questions:
-            self.region_results.insert(tk.END, "No matching questions found.")
-        else:
-            for item in questions:
-                self.region_results.insert(
-                    tk.END,
-                    f"Question: {item['question']}\nAnswer: {item['answer']}\n\n",
-                )
-
-        self.region_results.config(state="disabled")
+        matching_questions = search_questions(self.region_search_entry.get())
+        display_question_results(
+            self.region_results,
+            matching_questions,
+            self.root,
+        )
 
     def show_information_page(self):
         self.clear_page()
