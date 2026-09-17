@@ -37,6 +37,27 @@ SEASONS = {
 }
 
 
+# Add or edit region questions and answers in this list.
+REGION_QUESTIONS = [
+    {
+        "question": "What Noongar region do I live in if I live in Perth?",
+        "answer": "Perth is generally part of the Whadjuk Noongar region.",
+    },
+    {
+        "question": "What Noongar region do I live in if I live in Bunbury?",
+        "answer": "Bunbury is generally part of the Wardandi Noongar region.",
+    },
+    {
+        "question": "What Noongar region do I live in if I live in Albany?",
+        "answer": "Albany is generally part of the Menang Noongar region.",
+    },
+    {
+        "question": "What Noongar region do I live in if I live in the Wheatbelt?",
+        "answer": "Many parts of the Wheatbelt are associated with the Ballardong Noongar region.",
+    },
+]
+
+
 class NoongarSeasonApp:
     def __init__(self, root):
         self.root = root
@@ -100,13 +121,133 @@ class NoongarSeasonApp:
         entered_password = self.password_entry.get()
 
         if entered_password == self.password:
-            self.show_information_page()
+            self.show_home_page()
         else:
             self.info_label.config(text="Password incorrect. Please try again.")
 
+    def show_home_page(self):
+        self.clear_page()
+        self.root.title("Explore Noongar Seasons")
+        self.root.geometry("850x550")
+        self.root.minsize(700, 500)
+
+        tk.Label(
+            self.current_frame,
+            text="Explore the Noongar Seasons",
+            font=("Segoe UI", 24, "bold"),
+            fg="#2b2b2b",
+            bg="#f4efe7",
+        ).pack(pady=(10, 8))
+
+        tk.Label(
+            self.current_frame,
+            text="Choose an activity below to learn more.",
+            font=("Segoe UI", 11),
+            fg="#4a4a4a",
+            bg="#f4efe7",
+        ).pack(pady=(0, 18))
+
+        content = tk.Frame(self.current_frame, bg="#f4efe7")
+        content.pack(fill="both", expand=True, padx=10)
+        content.columnconfigure(0, weight=1)
+        content.columnconfigure(1, weight=1)
+        content.rowconfigure(0, weight=1)
+
+        seasons_panel = tk.Frame(content, bg="#e7d8c4", bd=1, relief="solid")
+        seasons_panel.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
+        tk.Label(
+            seasons_panel,
+            text="Explore the Noongar Seasons",
+            font=("Segoe UI", 16, "bold"),
+            fg="#24381d",
+            bg="#e7d8c4",
+            wraplength=300,
+        ).pack(pady=(55, 15))
+        tk.Label(
+            seasons_panel,
+            text="Visit the wheel of seasons and select a season to learn more.",
+            font=("Segoe UI", 11),
+            fg="#4a4a4a",
+            bg="#e7d8c4",
+            wraplength=300,
+            justify="center",
+        ).pack(padx=25, pady=(0, 25))
+        ttk.Button(
+            seasons_panel,
+            text="Open wheel of seasons",
+            command=self.show_information_page,
+        ).pack()
+
+        region_panel = tk.Frame(content, bg="#f7f3ee", bd=1, relief="solid")
+        region_panel.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
+        tk.Label(
+            region_panel,
+            text="What Noongar region do I live in?",
+            font=("Segoe UI", 16, "bold"),
+            fg="#24381d",
+            bg="#f7f3ee",
+            wraplength=300,
+        ).pack(pady=(25, 12))
+
+        search_frame = tk.Frame(region_panel, bg="#f7f3ee")
+        search_frame.pack(fill="x", padx=20)
+        self.region_search_entry = tk.Entry(search_frame, font=("Segoe UI", 10))
+        self.region_search_entry.pack(side="left", fill="x", expand=True)
+        self.region_search_entry.bind(
+            "<KeyRelease>", lambda event: self.search_region_questions()
+        )
+        ttk.Button(
+            search_frame,
+            text="Search",
+            command=self.search_region_questions,
+        ).pack(side="left", padx=(6, 0))
+
+        self.region_results = tk.Text(
+            region_panel,
+            height=12,
+            font=("Segoe UI", 10),
+            bg="#ffffff",
+            fg="#2b2b2b",
+            wrap="word",
+            state="disabled",
+        )
+        self.region_results.pack(fill="both", expand=True, padx=20, pady=12)
+        self.display_region_questions(REGION_QUESTIONS)
+
+        ttk.Button(
+            self.current_frame,
+            text="Log out",
+            command=self.show_login_page,
+        ).pack(pady=(12, 0))
+
+    def search_region_questions(self):
+        search_term = self.region_search_entry.get().strip().lower()
+        matching_questions = [
+            item
+            for item in REGION_QUESTIONS
+            if search_term in item["question"].lower()
+            or search_term in item["answer"].lower()
+        ]
+        self.display_region_questions(matching_questions)
+
+    def display_region_questions(self, questions):
+        self.region_results.config(state="normal")
+        self.region_results.delete("1.0", tk.END)
+
+        if not questions:
+            self.region_results.insert(tk.END, "No matching questions found.")
+        else:
+            for item in questions:
+                self.region_results.insert(
+                    tk.END,
+                    f"Question: {item['question']}\nAnswer: {item['answer']}\n\n",
+                )
+
+        self.region_results.config(state="disabled")
+
     def show_information_page(self):
         self.clear_page()
-        self.root.title("Noongar Seasons")
+        self.root.title("Wheel of Noongar Seasons")
         self.root.geometry("850x650")
         self.root.minsize(700, 600)
 
@@ -208,8 +349,11 @@ class NoongarSeasonApp:
             fill="#4e5c46",
         )
 
-        close_button = ttk.Button(self.current_frame, text="Close", command=self.root.destroy)
-        close_button.pack(pady=(0, 15))
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 15))
 
     def show_season_page(self, season_name):
         self.clear_page()
