@@ -41,6 +41,41 @@ SEASONS = {
 }
 
 
+WHADJUK_COUNCILS = {
+    "armadale",
+    "bassendean",
+    "bayswater",
+    "belmont",
+    "cambridge",
+    "canning",
+    "cockburn",
+    "claremont",
+    "cottesloe",
+    "cottelsoe",
+    "east fremantle",
+    "fremantle",
+    "gosnells",
+    "joondalup",
+    "kalamunda",
+    "kwinana",
+    "melville",
+    "mosman park",
+    "mundaring",
+    "nedlands",
+    "perth",
+    "rockingham",
+    "serpentine-jarrandale",
+    "serpentine-jarrahdale",
+    "south perth",
+    "stirling",
+    "subiaco",
+    "swan",
+    "victoria park",
+    "vincent",
+    "wanneroo",
+}
+
+
 class NoongarSeasonApp:
     def __init__(self, root):
         self.root = root
@@ -193,8 +228,8 @@ class NoongarSeasonApp:
     def show_question_page(self, question):
         self.clear_page()
         self.root.title("Question information")
-        self.root.geometry("700x500")
-        self.root.minsize(550, 400)
+        self.root.geometry("700x620")
+        self.root.minsize(550, 500)
 
         tk.Label(
             self.current_frame,
@@ -206,23 +241,65 @@ class NoongarSeasonApp:
             justify="center",
         ).pack(padx=30, pady=(45, 25))
 
-        answer_panel = tk.Frame(
+        search_panel = tk.Frame(
             self.current_frame,
             bg="#f7f3ee",
             bd=1,
             relief="solid",
         )
-        answer_panel.pack(fill="both", expand=True, padx=45, pady=(0, 25))
+        search_panel.pack(fill="both", expand=True, padx=45, pady=(0, 25))
 
         tk.Label(
-            answer_panel,
-            text=question["answer"],
-            font=("Segoe UI", 13),
+            search_panel,
+            text="Search your local council:",
+            font=("Segoe UI", 12, "bold"),
             fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).pack(anchor="w", padx=30, pady=(25, 8))
+
+        search_entry = tk.Entry(
+            search_panel,
+            font=("Segoe UI", 12),
+            width=35,
+        )
+        search_entry.pack(anchor="w", fill="x", padx=30)
+
+        result_label = tk.Label(
+            search_panel,
+            text="Enter a council name to see your Noongar region.",
+            font=("Segoe UI", 13),
+            fg="#24381d",
             bg="#f7f3ee",
             wraplength=540,
             justify="left",
-        ).pack(anchor="w", padx=30, pady=35)
+        )
+        result_label.pack(anchor="w", padx=30, pady=(20, 10))
+
+        image_placeholder = tk.Label(
+            search_panel,
+            text="Whadjuk region picture will be added here.",
+            font=("Segoe UI", 11, "italic"),
+            fg="#6b6b6b",
+            bg="#e7d8c4",
+            width=45,
+            height=5,
+        )
+        image_placeholder.pack(fill="x", padx=30, pady=(0, 25))
+
+        def update_region_result(event=None):
+            council = search_entry.get().strip().casefold()
+            if council in WHADJUK_COUNCILS:
+                result_label.config(text="You live in the Whadjuk region.")
+            elif council:
+                result_label.config(text="Council not found in the Whadjuk council list.")
+            else:
+                result_label.config(
+                    text="Enter a council name to see your Noongar region."
+                )
+
+        search_entry.bind("<KeyRelease>", update_region_result)
+        search_entry.bind("<Return>", update_region_result)
+        search_entry.focus_set()
 
         ttk.Button(
             self.current_frame,

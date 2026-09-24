@@ -2,7 +2,7 @@
 REGION_QUESTIONS = [
     {
         "question": "What Noongar region do I live in?",
-        "answer": "Click on your suburb and find out!.",
+        "answer": "Type in your council and find out and find out!.",
     },
 ]
 #An interactive map of perths subburbs will be placed here
