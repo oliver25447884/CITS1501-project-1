@@ -2,6 +2,7 @@ import tkinter as tk
 import math
 from tkinter import ttk
 from Moduals.Question_Modual import (
+    NOONGAR_REGIONS,
     REGION_QUESTIONS,
     display_question_results,
 )
@@ -38,41 +39,6 @@ SEASONS = {
         "description": "Kambarang is a season of flowering and new life. The land is green, vibrant, and full of movement as spring grows stronger.",
         "meaning": "This is a time of growth, abundance, and the return of energy across the environment as the warmer season approaches.",
     },
-}
-
-
-WHADJUK_COUNCILS = {
-    "armadale",
-    "bassendean",
-    "bayswater",
-    "belmont",
-    "cambridge",
-    "canning",
-    "cockburn",
-    "claremont",
-    "cottesloe",
-    "cottelsoe",
-    "east fremantle",
-    "fremantle",
-    "gosnells",
-    "joondalup",
-    "kalamunda",
-    "kwinana",
-    "melville",
-    "mosman park",
-    "mundaring",
-    "nedlands",
-    "perth",
-    "rockingham",
-    "serpentine-jarrandale",
-    "serpentine-jarrahdale",
-    "south perth",
-    "stirling",
-    "subiaco",
-    "swan",
-    "victoria park",
-    "vincent",
-    "wanneroo",
 }
 
 
@@ -288,10 +254,25 @@ class NoongarSeasonApp:
 
         def update_region_result(event=None):
             council = search_entry.get().strip().casefold()
-            if council in WHADJUK_COUNCILS:
-                result_label.config(text="You live in the Whadjuk region.")
+            matching_regions = [
+                region
+                for region, councils in NOONGAR_REGIONS.items()
+                if council in {name.casefold() for name in councils}
+            ]
+            if len(matching_regions) == 1:
+                result_label.config(
+                    text=f"You live in the {matching_regions[0]} region."
+                )
+            elif matching_regions:
+                listed_regions = ", ".join(matching_regions[:-1])
+                result_label.config(
+                    text=(
+                        f"This council is listed in the {listed_regions} and "
+                        f"{matching_regions[-1]} regions."
+                    )
+                )
             elif council:
-                result_label.config(text="Council not found in the Whadjuk council list.")
+                result_label.config(text="Council not found in the Noongar council list.")
             else:
                 result_label.config(
                     text="Enter a council name to see your Noongar region."
