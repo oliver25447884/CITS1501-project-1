@@ -1,5 +1,7 @@
 import tkinter as tk
 import math
+from pathlib import Path
+from fractions import Fraction
 from tkinter import ttk
 from Moduals.Question_Modual import (
     NOONGAR_REGIONS,
@@ -39,6 +41,15 @@ SEASONS = {
         "description": "Kambarang is a season of flowering and new life. The land is green, vibrant, and full of movement as spring grows stronger.",
         "meaning": "This is a time of growth, abundance, and the return of energy across the environment as the warmer season approaches.",
     },
+}
+
+REGION_IMAGE_FILES = {
+    "Whadjuk": "Whadjuk.png",
+    "Yued": "Yued.png",
+    "Ballardong": "Ballardong.png",
+    "Gnaala Karla Booja": "Gnaala Karla Boodja.png",
+    "South West Boojarah": "Southwest Boodjarah.png",
+    "Wagyl Kaip & Southern Noongar": "Wagyl Kaip Southern Noongar.png",
 }
 
 
@@ -193,8 +204,9 @@ class NoongarSeasonApp:
 
     def show_question_page(self, question):
         self.clear_page()
+        self.current_frame.pack_configure(pady=(20, 0))
         self.root.title("Question information")
-        self.root.geometry("700x620")
+        self.root.geometry("700x760")
         self.root.minsize(550, 500)
 
         tk.Label(
@@ -213,7 +225,7 @@ class NoongarSeasonApp:
             bd=1,
             relief="solid",
         )
-        search_panel.pack(fill="both", expand=True, padx=45, pady=(0, 25))
+        search_panel.pack(fill="x", padx=45, pady=(0, 8))
 
         tk.Label(
             search_panel,
@@ -241,16 +253,108 @@ class NoongarSeasonApp:
         )
         result_label.pack(anchor="w", padx=30, pady=(20, 10))
 
-        image_placeholder = tk.Label(
-            search_panel,
-            text="Whadjuk region picture will be added here.",
+        image_placeholder = tk.Frame(self.current_frame, bg="#e7d8c4")
+        tk.Label(
+            image_placeholder,
+            text="The region image will appear here.",
             font=("Segoe UI", 11, "italic"),
             fg="#6b6b6b",
             bg="#e7d8c4",
-            width=45,
             height=5,
-        )
-        image_placeholder.pack(fill="x", padx=30, pady=(0, 25))
+        ).pack(fill="both", expand=True)
+        region_image_cache = {}
+        image_state = {
+            "regions": [],
+            "fallback_text": "The region image will appear here.",
+            "size": None,
+        }
+
+        def show_region_images(regions, fallback_text):
+            image_width = image_placeholder.winfo_width()
+            image_height = image_placeholder.winfo_height()
+            if (
+                image_state["regions"] == regions
+                and image_state["fallback_text"] == fallback_text
+                and image_state["size"] == (image_width, image_height)
+            ):
+                return
+
+            image_state["regions"] = regions
+            image_state["fallback_text"] = fallback_text
+            image_state["size"] = (image_width, image_height)
+
+            for child in image_placeholder.winfo_children():
+                child.destroy()
+
+            if image_width <= 1 or image_height <= 1:
+                return
+
+            image_row = tk.Frame(image_placeholder, bg="#e7d8c4")
+            image_row.pack(side="bottom", anchor="center")
+            max_image_width = max(1, image_width // max(1, len(regions)))
+            for region in regions:
+                image_filename = REGION_IMAGE_FILES.get(region)
+                if image_filename is None:
+                    continue
+
+                if image_filename not in region_image_cache:
+                    image_path = (
+                        Path(__file__).resolve().parent
+                        / "Data"
+                        / "Regions"
+                        / image_filename
+                    )
+                    try:
+                        region_image_cache[image_filename] = tk.PhotoImage(
+                            file=str(image_path)
+                        )
+                    except tk.TclError:
+                        continue
+
+                image = region_image_cache[image_filename]
+                fit_scale = min(
+                    1,
+                    max_image_width / image.width(),
+                    image_height / image.height(),
+                )
+                scale = Fraction(fit_scale).limit_denominator(12)
+                if float(scale) > fit_scale:
+                    scale = Fraction(max(1, math.floor(fit_scale * 12)), 12)
+                display_image = (
+                    image.zoom(scale.numerator, scale.numerator).subsample(
+                        scale.denominator, scale.denominator
+                    )
+                    if scale < 1
+                    else image
+                )
+
+                image_label = tk.Label(
+                    image_row,
+                    image=display_image,
+                    bg="#e7d8c4",
+                )
+                image_label.image = display_image
+                image_label.pack(side="left", anchor="s", padx=5)
+
+            if not image_placeholder.winfo_children():
+                tk.Label(
+                    image_placeholder,
+                    text=fallback_text,
+                    font=("Segoe UI", 11, "italic"),
+                    fg="#6b6b6b",
+                    bg="#e7d8c4",
+                    height=5,
+                ).pack(fill="both", expand=True)
+            elif not image_row.winfo_children():
+                image_row.destroy()
+                tk.Label(
+                    image_placeholder,
+                    text=fallback_text,
+                    font=("Segoe UI", 11, "italic"),
+                    fg="#6b6b6b",
+                    bg="#e7d8c4",
+                    height=5,
+                ).pack(side="bottom", fill="x")
 
         def update_region_result(event=None):
             council = search_entry.get().strip().casefold()
@@ -277,6 +381,20 @@ class NoongarSeasonApp:
                 result_label.config(
                     text="Enter a council name to see your Noongar region."
                 )
+            fallback_text = (
+                "No region image is available."
+                if council
+                else "The region image will appear here."
+            )
+            show_region_images(matching_regions, fallback_text)
+
+        def resize_region_images(event):
+            if image_state["size"] != (event.width, event.height):
+                show_region_images(
+                    image_state["regions"], image_state["fallback_text"]
+                )
+
+        image_placeholder.bind("<Configure>", resize_region_images)
 
         search_entry.bind("<KeyRelease>", update_region_result)
         search_entry.bind("<Return>", update_region_result)
@@ -286,7 +404,8 @@ class NoongarSeasonApp:
             self.current_frame,
             text="Back to explore",
             command=self.show_home_page,
-        ).pack(pady=(0, 20))
+        ).pack(pady=(0, 8))
+        image_placeholder.pack(fill="both", expand=True, padx=20, pady=0)
 
     def show_information_page(self):
         self.clear_page()
