@@ -485,6 +485,20 @@ class NoongarSeasonApp:
                 fill="#fffdfb",
                 tags=arc_tag,
             )
+            canvas.tag_bind(
+                arc_tag,
+                "<Enter>",
+                lambda event, tag=arc_tag: canvas.scale(
+                    tag, center_x, center_y, 1.04, 1.04
+                ),
+            )
+            canvas.tag_bind(
+                arc_tag,
+                "<Leave>",
+                lambda event, tag=arc_tag: canvas.scale(
+                    tag, center_x, center_y, 1 / 1.04, 1 / 1.04
+                ),
+            )
             canvas.tag_bind(arc_tag, "<Button-1>", lambda event, name=season_name: self.show_season_page(name))
 
         canvas.create_oval(
