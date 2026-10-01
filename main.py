@@ -60,7 +60,6 @@ REGION_IMAGE_FILES = {
     "South West Boojarah": "Southwest Boodjarah.png",
     "Wagyl Kaip & Southern Noongar": "Wagyl Kaip Southern Noongar.png",
 }
-}
 
 
 class NoongarSeasonApp:
