@@ -36,6 +36,15 @@ SEASONS = {
     },
 }
 
+CLIMATE_DATA = {
+    "Birak": {"rainfall": 23, "temperature": 27.4},
+    "Bunuru": {"rainfall": 28, "temperature": 26.1},
+    "Djeran": {"rainfall": 91, "temperature": 21.1},
+    "Makuru": {"rainfall": 173, "temperature": 16.2},
+    "Djilba": {"rainfall": 119, "temperature": 15.7},
+    "Kambarang": {"rainfall": 61, "temperature": 19.6},
+}
+
 
 class NoongarSeasonApp:
     def __init__(self, root):
@@ -107,8 +116,8 @@ class NoongarSeasonApp:
     def show_information_page(self):
         self.clear_page()
         self.root.title("Noongar Seasons")
-        self.root.geometry("850x650")
-        self.root.minsize(700, 600)
+        self.root.geometry("950x900")
+        self.root.minsize(760, 780)
 
         title = tk.Label(
             self.current_frame,
@@ -208,8 +217,67 @@ class NoongarSeasonApp:
             fill="#4e5c46",
         )
 
+        graph_title = tk.Label(
+            self.current_frame,
+            text="Perth climate by season",
+            font=("Segoe UI", 15, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+        )
+        graph_title.pack(pady=(4, 0))
+
+        graph_note = tk.Label(
+            self.current_frame,
+            text="Average rainfall and temperature across each two-month season",
+            font=("Segoe UI", 10),
+            fg="#4e5c46",
+            bg="#f4efe7",
+        )
+        graph_note.pack(pady=(0, 4))
+
+        graph = tk.Canvas(
+            self.current_frame,
+            width=760,
+            height=190,
+            bg="#f7f3ee",
+            highlightthickness=0,
+        )
+        graph.pack(padx=20, pady=(0, 5))
+        self.draw_climate_graph(graph)
+
         close_button = ttk.Button(self.current_frame, text="Close", command=self.root.destroy)
         close_button.pack(pady=(0, 15))
+
+    def draw_climate_graph(self, graph):
+        left, top, width, height = 62, 22, 650, 125
+        max_rainfall = 180
+        max_temperature = 30
+        season_names = list(CLIMATE_DATA)
+        column_width = width / len(season_names)
+
+        for grid_value in (0, 60, 120, 180):
+            y = top + height - (grid_value / max_rainfall) * height
+            graph.create_line(left, y, left + width, y, fill="#d8cfc1")
+            graph.create_text(left - 12, y, text=str(grid_value), anchor="e", fill="#6f756c", font=("Segoe UI", 8))
+
+        graph.create_text(12, top - 8, text="mm", anchor="w", fill="#5a86a5", font=("Segoe UI", 8, "bold"))
+        graph.create_text(left + width + 8, top - 8, text="°C", anchor="w", fill="#d47752", font=("Segoe UI", 8, "bold"))
+
+        for index, season_name in enumerate(season_names):
+            values = CLIMATE_DATA[season_name]
+            center = left + column_width * index + column_width / 2
+            rainfall_height = values["rainfall"] / max_rainfall * height
+            temperature_height = values["temperature"] / max_temperature * height
+            graph.create_rectangle(center - 17, top + height - rainfall_height, center - 3, top + height, fill="#5a86a5", outline="")
+            graph.create_rectangle(center + 3, top + height - temperature_height, center + 17, top + height, fill="#d47752", outline="")
+            graph.create_text(center - 10, top + height - rainfall_height - 8, text=str(values["rainfall"]), fill="#315b70", font=("Segoe UI", 8, "bold"))
+            graph.create_text(center + 10, top + height - temperature_height - 8, text=str(values["temperature"]), fill="#a04f34", font=("Segoe UI", 8, "bold"))
+            graph.create_text(center, top + height + 18, text=season_name, fill="#2b2b2b", font=("Segoe UI", 9, "bold"))
+
+        graph.create_rectangle(left + width - 130, 2, left + width - 118, 14, fill="#5a86a5", outline="")
+        graph.create_text(left + width - 112, 8, text="Rainfall", anchor="w", fill="#4e5c46", font=("Segoe UI", 8))
+        graph.create_rectangle(left + width - 58, 2, left + width - 46, 14, fill="#d47752", outline="")
+        graph.create_text(left + width - 40, 8, text="Temp", anchor="w", fill="#4e5c46", font=("Segoe UI", 8))
 
     def show_season_page(self, season_name):
         self.clear_page()
