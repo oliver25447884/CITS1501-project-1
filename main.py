@@ -60,7 +60,7 @@ class NoongarSeasonApp:
         self.current_frame = None
         self.security = SecurityModule(self)
 
-        self.security.show_login_page()
+        self.security.show_startup_page()
 
     def clear_page(self):
         if self.current_frame is not None:
