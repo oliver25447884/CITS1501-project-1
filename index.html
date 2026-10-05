@@ -169,136 +169,6 @@
     </head>
     <body>
       <div id="rainfall-layer" class="rainfall-layer" aria-hidden="true"></div>
-      <div id="login-screen" class="login-screen">
-        <div class="login-box">
-          <h2>Enter password</h2>
-          <p>Use the password to unlock the Noongar weather wheel and explore each season.</p>
-          <input id="password-input" type="password" placeholder="Password" />
-          <button id="unlock-button">Unlock</button>
-        </div>
-      </div>
-
-      <div id="app" class="page hidden">
-        <div class="nav">
-          <a href="index.html">🏠 Home</a>
-          <a href="about.html">ℹ️ About</a>
-        </div>
-
-        <div class="topbar">
-          <p class="eyebrow">PERTH / SOUTH-WESTERN AUSTRALIA</p>
-          <h1 class="title">Noongar Weather Seasons</h1>
-          <p class="subtitle">A 3D interactive circular view of Perth's six Noongar seasons, built using real BOM rainfall and temperature averages. Click any segment to explore.</p>
-        </div>
-
-        <div class="wheel-container">
-          <div class="wheel-shell">
-            <svg viewBox="0 0 800 800" role="img" aria-label="Noongar weather season wheel">
-              <defs>
-                
-            <pattern id="pattern-djilba" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              <rect width="120" height="120" fill="#8EC7A9"/>
-              <circle cx="22" cy="18" r="18" fill="rgba(255,255,255,0.18)"/>
-              <rect x="0" y="86" width="120" height="34" fill="rgba(38,66,52,0.18)"/>
-              <path d="M0 82 C25 64, 42 62, 62 82 S100 98, 120 84 L120 120 L0 120 Z" fill="rgba(24,40,44,0.12)"/>
-              <circle cx="86" cy="42" r="16" fill="rgba(255,255,255,0.24)"/>
-              <path d="M20 76 C32 58, 42 52, 52 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M54 76 C74 58, 82 52, 96 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <g opacity="0.75">
-                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="64" cy="28" r="6" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="92" cy="34" r="5" fill="rgba(255,255,255,0.5)"/>
-              </g>
-            </pattern>
-            
-            <pattern id="pattern-kambarang" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              <rect width="120" height="120" fill="#F2C969"/>
-              <circle cx="22" cy="18" r="18" fill="rgba(255,255,255,0.18)"/>
-              <rect x="0" y="86" width="120" height="34" fill="rgba(38,66,52,0.18)"/>
-              <path d="M0 82 C25 64, 42 62, 62 82 S100 98, 120 84 L120 120 L0 120 Z" fill="rgba(24,40,44,0.12)"/>
-              <circle cx="86" cy="42" r="16" fill="rgba(255,255,255,0.24)"/>
-              <path d="M20 76 C32 58, 42 52, 52 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M54 76 C74 58, 82 52, 96 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <g opacity="0.75">
-                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="64" cy="28" r="6" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="92" cy="34" r="5" fill="rgba(255,255,255,0.5)"/>
-              </g>
-            </pattern>
-            
-            <pattern id="pattern-birak" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              <rect width="120" height="120" fill="#F28E3C"/>
-              <circle cx="22" cy="18" r="18" fill="rgba(255,255,255,0.18)"/>
-              <rect x="0" y="86" width="120" height="34" fill="rgba(38,66,52,0.18)"/>
-              <path d="M0 82 C25 64, 42 62, 62 82 S100 98, 120 84 L120 120 L0 120 Z" fill="rgba(24,40,44,0.12)"/>
-              <circle cx="86" cy="42" r="16" fill="rgba(255,255,255,0.24)"/>
-              <path d="M20 76 C32 58, 42 52, 52 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M54 76 C74 58, 82 52, 96 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <g opacity="0.75">
-                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="64" cy="28" r="6" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="92" cy="34" r="5" fill="rgba(255,255,255,0.5)"/>
-              </g>
-            </pattern>
-            
-            <pattern id="pattern-bunuru" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              <rect width="120" height="120" fill="#D9684A"/>
-              <circle cx="22" cy="18" r="18" fill="rgba(255,255,255,0.18)"/>
-              <rect x="0" y="86" width="120" height="34" fill="rgba(38,66,52,0.18)"/>
-              <path d="M0 82 C25 64, 42 62, 62 82 S100 98, 120 84 L120 120 L0 120 Z" fill="rgba(24,40,44,0.12)"/>
-              <circle cx="86" cy="42" r="16" fill="rgba(255,255,255,0.24)"/>
-              <path d="M20 76 C32 58, 42 52, 52 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M54 76 C74 58, 82 52, 96 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <g opacity="0.75">
-                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="64" cy="28" r="6" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="92" cy="34" r="5" fill="rgba(255,255,255,0.5)"/>
-              </g>
-            </pattern>
-            
-            <pattern id="pattern-djeran" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              <rect width="120" height="120" fill="#A7C36B"/>
-              <circle cx="22" cy="18" r="18" fill="rgba(255,255,255,0.18)"/>
-              <rect x="0" y="86" width="120" height="34" fill="rgba(38,66,52,0.18)"/>
-              <path d="M0 82 C25 64, 42 62, 62 82 S100 98, 120 84 L120 120 L0 120 Z" fill="rgba(24,40,44,0.12)"/>
-              <circle cx="86" cy="42" r="16" fill="rgba(255,255,255,0.24)"/>
-              <path d="M20 76 C32 58, 42 52, 52 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M54 76 C74 58, 82 52, 96 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <g opacity="0.75">
-                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="64" cy="28" r="6" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="92" cy="34" r="5" fill="rgba(255,255,255,0.5)"/>
-              </g>
-            </pattern>
-            
-            <pattern id="pattern-makuru" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              <rect width="120" height="120" fill="#5A86A5"/>
-              <circle cx="22" cy="18" r="18" fill="rgba(255,255,255,0.18)"/>
-              <rect x="0" y="86" width="120" height="34" fill="rgba(38,66,52,0.18)"/>
-              <path d="M0 82 C25 64, 42 62, 62 82 S100 98, 120 84 L120 120 L0 120 Z" fill="rgba(24,40,44,0.12)"/>
-              <circle cx="86" cy="42" r="16" fill="rgba(255,255,255,0.24)"/>
-              <path d="M20 76 C32 58, 42 52, 52 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M54 76 C74 58, 82 52, 96 74" stroke="rgba(50,80,50,0.22)" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <g opacity="0.75">
-                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="64" cy="28" r="6" fill="rgba(255,255,255,0.5)"/>
-                <circle cx="92" cy="34" r="5" fill="rgba(255,255,255,0.5)"/>
-              </g>
-            </pattern>
-            
-                <radialGradient id="wheel-glow" cx="50%" cy="45%" r="60%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-                  <stop offset="100%" stop-color="#dfe6dd" stop-opacity="0.9"/>
-                </radialGradient>
-              </defs>
-              <circle cx="400" cy="400" r="316" fill="url(#wheel-glow)" stroke="#dfeae0" stroke-width="10"/>
-              <circle cx="400" cy="400" r="122" fill="#f8fbf7" stroke="#dfeae0" stroke-width="6"/>
-              
-            <path d="M 400 400 L 400.00 100.00 A 300 300 0 0 1 659.81 250.00 Z" fill="url(#pattern-djilba)" stroke="#f8f3ea" stroke-width="4" data-season="Djilba" class="season-segment"/>
-            
-            <text x="510.00" y="209.47" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="800" fill="#111111" font-family="Arial, sans-serif" style="text-shadow: 0 1px 0 rgba(255,255,255,0.6);">Djilba</text>
-            
-            <path d="M 400 400 L 659.81 250.00 A 300 300 0 0 1 659.81 550.00 Z" fill="url(#pattern-kambarang)" stroke="#f8f3ea" stroke-width="4" data-season="Kambarang" class="season-segment"/>
-            
             <text x="620.00" y="400.00" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="800" fill="#111111" font-family="Arial, sans-serif" style="text-shadow: 0 1px 0 rgba(255,255,255,0.6);">Kambarang</text>
             
             <path d="M 400 400 L 659.81 550.00 A 300 300 0 0 1 400.00 700.00 Z" fill="url(#pattern-birak)" stroke="#f8f3ea" stroke-width="4" data-season="Birak" class="season-segment"/>
@@ -359,6 +229,7 @@
             <span class="legend-item legend-temp">Average temperature (°C)</span>
           </div>
         </section>
+
       </div>
 
       <script>
