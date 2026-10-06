@@ -6,6 +6,7 @@ from tkinter import ttk
 from Moduals.Question_Modual import (
     NOONGAR_REGIONS,
     REGION_QUESTIONS,
+    display_question_answer,
     display_question_results,
 )
 from Moduals.Security_Modual import SecurityModule
@@ -124,6 +125,14 @@ class NoongarSeasonApp:
         self.root.title("Question information")
         self.root.geometry("700x760")
         self.root.minsize(550, 500)
+
+        if question.get("type") != "region_lookup":
+            display_question_answer(
+                self.current_frame,
+                question,
+                self.show_home_page,
+            )
+            return
 
         tk.Label(
             self.current_frame,

@@ -118,9 +118,64 @@ REGION_QUESTIONS = [
     {
         "question": "What Noongar region do I live in?",
         "answer": "Type in your council to find your Noongar region.",
+        "type": "region_lookup",
+    },
+    {
+        "question": "What does the Noongar seasonal calendar describe?",
+        "answer": (
+            "It describes seasonal changes in the environment, including "
+            "weather, plants and animal activity."
+        ),
+    },
+    {
+        "question": "How is the Noongar seasonal calendar different from a four-season calendar?",
+        "answer": (
+            "It recognises six seasons, each connected to changes in the local "
+            "environment rather than dividing the year into just spring, "
+            "summer, autumn and winter."
+        ),
+    },
+    {
+        "question": "What kinds of signs can indicate a change of season?",
+        "answer": (
+            "Changes in weather, flowering plants, animal behaviour and other "
+            "natural events can signal a change of season."
+        ),
     },
 ]
 #An interactive map of perths subburbs will be placed here
+
+
+def display_question_answer(answer_frame, question, back_to_questions):
+    import tkinter as tk
+    from tkinter import ttk
+
+    tk.Label(
+        answer_frame,
+        text=question["question"],
+        font=("Segoe UI", 20, "bold"),
+        fg="#24381d",
+        bg="#f4efe7",
+        wraplength=600,
+        justify="center",
+    ).pack(padx=30, pady=(45, 25))
+    tk.Label(
+        answer_frame,
+        text=question["answer"],
+        font=("Segoe UI", 14),
+        fg="#2b2b2b",
+        bg="#f7f3ee",
+        wraplength=560,
+        justify="left",
+        padx=25,
+        pady=25,
+    ).pack(fill="x", padx=45, pady=(0, 20))
+    ttk.Button(
+        answer_frame,
+        text="Back to explore",
+        command=back_to_questions,
+    ).pack(pady=(0, 8))
+
 
 def display_question_results(results_frame, questions, open_question):
     import tkinter as tk
@@ -144,4 +199,3 @@ def display_question_results(results_frame, questions, open_question):
                 text=item["question"],
                 command=lambda question=item: open_question(question),
             ).pack(fill="x", padx=10, pady=5)
-
