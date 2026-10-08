@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from fractions import Fraction
 from tkinter import ttk
+import webbrowser
 from Moduals.Question_Modual import (
     NOONGAR_REGIONS,
     REGION_QUESTIONS,
@@ -175,15 +176,35 @@ FAQ_ITEMS = (
     },
 )
 
+SOURCE_ITEMS = (
+    {
+        "title": "Bureau of Meteorology — Climate Data Online",
+        "description": (
+            "Daily rainfall and temperature data for Perth Metro, station "
+            "009225, for January to December 2024. The app uses these records "
+            "to calculate seasonal averages."
+        ),
+        "url": "https://www.bom.gov.au/climate/data/",
+    },
+    {
+        "title": "Bureau of Meteorology — About rainfall data",
+        "description": "Information about Bureau of Meteorology rainfall data.",
+        "url": "https://www.bom.gov.au/climate/cdo/about/about-rain-data.shtml",
+    },
+    {
+        "title": "Bureau of Meteorology — About air temperature data",
+        "description": (
+            "Information about Bureau of Meteorology air temperature data."
+        ),
+        "url": "https://www.bom.gov.au/climate/cdo/about/about-airtemp-data.shtml",
+    },
+)
+
 
 class NoongarSeasonApp:
     def __init__(self, root):
         self.root = root
         self.root.configure(bg="#f4efe7")
-        self.is_fullscreen = True
-        self.root.attributes("-fullscreen", True)
-        self.root.bind("<Escape>", self.toggle_fullscreen)
-        self.root.bind("<F11>", self.toggle_fullscreen)
         self._configure_styles()
         self.current_frame = None
         self.season_wheel = SeasonWheel(self)
@@ -209,16 +230,7 @@ class NoongarSeasonApp:
             background=[("active", "#244638")],
         )
 
-    def toggle_fullscreen(self, event=None):
-        self.is_fullscreen = not self.is_fullscreen
-        self.root.attributes("-fullscreen", self.is_fullscreen)
-        if not self.is_fullscreen:
-            self.set_windowed_size("1100x760", (620, 480))
-        return "break"
-
     def set_windowed_size(self, geometry, minimum_size):
-        if self.is_fullscreen:
-            return
         requested_width, requested_height = map(int, geometry.split("x"))
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -238,6 +250,12 @@ class NoongarSeasonApp:
         self.clear_page()
         self.root.title("Explore Noongar Seasons")
         self.set_windowed_size("850x550", (700, 500))
+
+        ttk.Button(
+            self.current_frame,
+            text="Sources",
+            command=self.show_sources_window,
+        ).pack(anchor="nw", padx=4, pady=(0, 2))
 
         tk.Label(
             self.current_frame,
@@ -322,6 +340,116 @@ class NoongarSeasonApp:
             text="Log out",
             command=self.security.show_login_page,
         ).pack(pady=(12, 0))
+
+    def show_sources_window(self):
+        sources_window = tk.Toplevel(self.root)
+        sources_window.title("Sources | Noongar Seasons")
+        sources_window.geometry("700x520")
+        sources_window.minsize(560, 400)
+        sources_window.configure(bg="#f4efe7")
+        sources_window.transient(self.root)
+
+        tk.Label(
+            sources_window,
+            text="Sources",
+            font=("Segoe UI", 22, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+        ).pack(pady=(18, 6))
+        tk.Label(
+            sources_window,
+            text="Data and references used by the application.",
+            font=("Segoe UI", 11),
+            fg="#4a4a4a",
+            bg="#f4efe7",
+        ).pack(pady=(0, 12))
+
+        list_frame = tk.Frame(sources_window, bg="#f4efe7")
+        list_frame.pack(fill="both", expand=True, padx=18, pady=(0, 12))
+        list_frame.rowconfigure(0, weight=1)
+        list_frame.columnconfigure(0, weight=1)
+
+        canvas = tk.Canvas(
+            list_frame,
+            bg="#f4efe7",
+            highlightthickness=0,
+        )
+        scrollbar = ttk.Scrollbar(
+            list_frame,
+            orient="vertical",
+            command=canvas.yview,
+        )
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
+        sources_frame = tk.Frame(canvas, bg="#f4efe7")
+        sources_window_id = canvas.create_window(
+            (0, 0),
+            window=sources_frame,
+            anchor="nw",
+        )
+        sources_frame.bind(
+            "<Configure>",
+            lambda event: canvas.configure(scrollregion=canvas.bbox("all")),
+        )
+        canvas.bind(
+            "<Configure>",
+            lambda event: canvas.itemconfigure(
+                sources_window_id,
+                width=event.width,
+            ),
+        )
+
+        for source in SOURCE_ITEMS:
+            source_panel = tk.Frame(
+                sources_frame,
+                bg="#f7f3ee",
+                bd=1,
+                relief="solid",
+            )
+            source_panel.pack(fill="x", padx=4, pady=5)
+            tk.Label(
+                source_panel,
+                text=source["title"],
+                font=("Segoe UI", 12, "bold"),
+                fg="#24381d",
+                bg="#f7f3ee",
+                anchor="w",
+                justify="left",
+                wraplength=590,
+            ).pack(fill="x", padx=14, pady=(12, 4))
+            tk.Label(
+                source_panel,
+                text=source["description"],
+                font=("Segoe UI", 10),
+                fg="#2b2b2b",
+                bg="#f7f3ee",
+                anchor="w",
+                justify="left",
+                wraplength=590,
+            ).pack(fill="x", padx=14, pady=(0, 6))
+            source_link = tk.Label(
+                source_panel,
+                text=source["url"],
+                font=("Segoe UI", 10, "underline"),
+                fg="#345c4c",
+                bg="#f7f3ee",
+                anchor="w",
+                cursor="hand2",
+                wraplength=590,
+            )
+            source_link.pack(fill="x", padx=14, pady=(0, 12))
+            source_link.bind(
+                "<Button-1>",
+                lambda event, url=source["url"]: webbrowser.open(url),
+            )
+
+        ttk.Button(
+            sources_window,
+            text="Close",
+            command=sources_window.destroy,
+        ).pack(pady=(0, 14))
 
     def show_questions_page(self):
         self.clear_page()

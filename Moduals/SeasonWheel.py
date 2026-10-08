@@ -64,8 +64,7 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title("Wheel of Noongar Seasons")
-        app.root.geometry("950x900")
-        app.root.minsize(760, 780)
+        app.set_windowed_size("950x900", (760, 780))
         current_frame = app.current_frame
 
         title = tk.Label(
@@ -261,7 +260,7 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title(f"{season_name} | Noongar Seasons")
-        app.root.geometry("700x500")
+        app.set_windowed_size("700x500", (550, 400))
         current_frame = app.current_frame
 
         season = SEASONS[season_name]
