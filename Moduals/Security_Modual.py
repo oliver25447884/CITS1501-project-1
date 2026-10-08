@@ -1,6 +1,8 @@
 import hashlib
 import hmac
 import json
+import subprocess
+import sys
 import secrets
 import tkinter as tk
 from pathlib import Path
@@ -92,8 +94,7 @@ class SecurityModule:
 
     def _prepare_root(self, title, geometry, minimum_size):
         self.app.root.title(title)
-        self.app.root.geometry(geometry)
-        self.app.root.minsize(*minimum_size)
+        self.app.set_windowed_size(geometry, minimum_size)
         self.app.root.configure(bg="#f4efe7")
 
     def _password_within_limit(self, proposed_value):
@@ -268,9 +269,32 @@ class SecurityModule:
         entered_password = self.password_entry.get()
 
         if _verify_secret(entered_password, self.credentials["password"]):
+            self._play_login_sound(True)
             self.app.show_home_page()
         else:
+            self._play_login_sound(False)
+            self.password_entry.delete(0, tk.END)
             self.info_label.config(text="Password incorrect. Please try again.")
+            self.password_entry.focus_set()
+
+    def _play_login_sound(self, succeeded):
+        try:
+            if sys.platform == "darwin":
+                sound_name = "Glass.aiff" if succeeded else "Basso.aiff"
+                subprocess.Popen(
+                    ["afplay", f"/System/Library/Sounds/{sound_name}"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            elif sys.platform.startswith("win"):
+                import winsound
+
+                sound = winsound.MB_OK if succeeded else winsound.MB_ICONHAND
+                winsound.MessageBeep(sound)
+            else:
+                self.app.root.bell()
+        except (AttributeError, OSError):
+            self.app.root.bell()
 
     def show_forgot_password_window(self):
         if self.credentials is None:

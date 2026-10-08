@@ -178,23 +178,65 @@ FAQ_ITEMS = (
 class NoongarSeasonApp:
     def __init__(self, root):
         self.root = root
+        self.root.configure(bg="#f4efe7")
+        self.is_fullscreen = True
+        self.root.attributes("-fullscreen", True)
+        self.root.bind("<Escape>", self.toggle_fullscreen)
+        self.root.bind("<F11>", self.toggle_fullscreen)
+        self._configure_styles()
         self.current_frame = None
         self.season_wheel = SeasonWheel(self)
         self.security = SecurityModule(self)
 
         self.security.show_startup_page()
 
+    def _configure_styles(self):
+        style = ttk.Style(self.root)
+        if "clam" in style.theme_names():
+            style.theme_use("clam")
+        style.configure(
+            "TButton",
+            font=("TkDefaultFont", 10, "bold"),
+            foreground="#ffffff",
+            background="#345c4c",
+            borderwidth=0,
+            padding=(12, 8),
+        )
+        style.map(
+            "TButton",
+            foreground=[("active", "#ffffff")],
+            background=[("active", "#244638")],
+        )
+
+    def toggle_fullscreen(self, event=None):
+        self.is_fullscreen = not self.is_fullscreen
+        self.root.attributes("-fullscreen", self.is_fullscreen)
+        if not self.is_fullscreen:
+            self.set_windowed_size("1100x760", (620, 480))
+        return "break"
+
+    def set_windowed_size(self, geometry, minimum_size):
+        if self.is_fullscreen:
+            return
+        requested_width, requested_height = map(int, geometry.split("x"))
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        width = min(requested_width, max(400, screen_width - 48))
+        height = min(requested_height, max(360, screen_height - 80))
+        self.root.minsize(1, 1)
+        self.root.geometry(f"{width}x{height}")
+        self.root.minsize(min(minimum_size[0], width), min(minimum_size[1], height))
+
     def clear_page(self):
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = tk.Frame(self.root, bg="#f4efe7")
-        self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        self.current_frame.pack(fill="both", expand=True)
 
     def show_home_page(self):
         self.clear_page()
         self.root.title("Explore Noongar Seasons")
-        self.root.geometry("850x550")
-        self.root.minsize(700, 500)
+        self.set_windowed_size("850x550", (700, 500))
 
         tk.Label(
             self.current_frame,
@@ -289,8 +331,7 @@ class NoongarSeasonApp:
     def show_questions_page(self):
         self.clear_page()
         self.root.title("Questions and answers | Noongar Seasons")
-        self.root.geometry("850x760")
-        self.root.minsize(650, 550)
+        self.set_windowed_size("850x760", (650, 550))
 
         tk.Label(
             self.current_frame,
@@ -431,8 +472,7 @@ class NoongarSeasonApp:
         self.clear_page()
         self.current_frame.pack_configure(pady=(20, 0))
         self.root.title("Question information")
-        self.root.geometry("700x760")
-        self.root.minsize(550, 500)
+        self.set_windowed_size("700x760", (550, 500))
 
         if question.get("type") != "region_lookup":
             display_question_answer(
