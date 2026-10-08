@@ -121,6 +121,11 @@ REGION_QUESTIONS = [
         "type": "region_lookup",
     },
     {
+        "question": "Which Noongar season is it?",
+        "answer": "Enter a date to find its Noongar season.",
+        "type": "season_lookup",
+    },
+    {
         "question": "What does the Noongar seasonal calendar describe?",
         "answer": (
             "It describes seasonal changes in the environment, including "
@@ -298,23 +303,87 @@ def display_question_answer(answer_frame, question, back_to_questions):
 
 def display_question_results(results_frame, questions, open_question):
     import tkinter as tk
+    import textwrap
     from tkinter import ttk
 
     for child in results_frame.winfo_children():
         child.destroy()
 
+    canvas = tk.Canvas(
+        results_frame,
+        bg="#ffffff",
+        highlightthickness=0,
+    )
+    scrollbar = ttk.Scrollbar(
+        results_frame,
+        orient="vertical",
+        command=canvas.yview,
+    )
+    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    questions_frame = tk.Frame(canvas, bg="#ffffff")
+    questions_window = canvas.create_window(
+        (0, 0),
+        window=questions_frame,
+        anchor="nw",
+    )
+
+    def update_scroll_region(event=None):
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
+    def resize_questions(event):
+        canvas.itemconfigure(questions_window, width=event.width)
+
+    def scroll_questions(event):
+        if getattr(event, "num", None) == 4:
+            direction = -1
+        elif getattr(event, "num", None) == 5:
+            direction = 1
+        else:
+            direction = -1 if event.delta > 0 else 1
+        canvas.yview_scroll(direction, "units")
+        return "break"
+
+    def bind_question_scrolling(widget):
+        widget.bind("<MouseWheel>", scroll_questions)
+        widget.bind("<Button-4>", scroll_questions)
+        widget.bind("<Button-5>", scroll_questions)
+
+    questions_frame.bind("<Configure>", update_scroll_region)
+    canvas.bind("<Configure>", resize_questions)
+    bind_question_scrolling(canvas)
+    bind_question_scrolling(questions_frame)
+
     if not questions:
         tk.Label(
-            results_frame,
+            questions_frame,
             text="No questions available.",
             font=("Segoe UI", 10),
             bg="#ffffff",
             fg="#2b2b2b",
         ).pack(pady=15)
     else:
+        current_section = None
         for item in questions:
-            ttk.Button(
-                results_frame,
-                text=item["question"],
+            section = item.get("season", "General questions")
+            if section != current_section:
+                current_section = section
+                section_label = tk.Label(
+                    questions_frame,
+                    text=section,
+                    font=("Segoe UI", 10, "bold"),
+                    fg="#24381d",
+                    bg="#ffffff",
+                )
+                section_label.pack(anchor="w", padx=10, pady=(10, 3))
+                bind_question_scrolling(section_label)
+
+            question_button = ttk.Button(
+                questions_frame,
+                text=textwrap.fill(item["question"], width=38),
                 command=lambda question=item: open_question(question),
-            ).pack(fill="x", padx=10, pady=5)
+            )
+            question_button.pack(fill="x", padx=10, pady=3)
+            bind_question_scrolling(question_button)

@@ -110,6 +110,25 @@ SEASON_GRAPH_FILES = {
     "Kambarang": "noongar_seasons_perth (dragged) 6.jpg",
 }
 
+SEASON_BY_MONTH = {
+    12: "Birak",
+    1: "Birak",
+    2: "Bunuru",
+    3: "Bunuru",
+    4: "Djeran",
+    5: "Djeran",
+    6: "Makuru",
+    7: "Makuru",
+    8: "Djilba",
+    9: "Djilba",
+    10: "Kambarang",
+    11: "Kambarang",
+}
+
+
+def season_for_month(month):
+    return SEASON_BY_MONTH[month]
+
 
 class SeasonWheel:
     def __init__(self, app):
@@ -121,8 +140,7 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title("Wheel of Noongar Seasons")
-        app.root.geometry("950x900")
-        app.root.minsize(760, 780)
+        app.set_windowed_size("950x900", (760, 780))
         current_frame = app.current_frame
 
         title = tk.Label(
@@ -318,7 +336,9 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title(f"{season_name} | Noongar Seasons")
-        app.set_windowed_size("1040x820", (620, 560))
+        app.root.geometry("700x500")
+        current_frame = app.current_frame
+
         season = SEASONS[season_name]
 
         header = tk.Frame(app.current_frame, bg="#17392f", padx=18, pady=10)

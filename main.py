@@ -1,8 +1,10 @@
 import tkinter as tk
 import math
+from datetime import datetime
 from pathlib import Path
 from fractions import Fraction
 from tkinter import ttk
+import webbrowser
 from Moduals.Question_Modual import (
     NOONGAR_REGIONS,
     REGION_QUESTIONS,
@@ -10,7 +12,7 @@ from Moduals.Question_Modual import (
     display_question_results,
 )
 from Moduals.Security_Modual import SecurityModule
-from Moduals.SeasonWheel import SeasonWheel
+from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
 
 REGION_IMAGE_FILES = {
     "Whadjuk": "Whadjuk.png",
@@ -174,15 +176,35 @@ FAQ_ITEMS = (
     },
 )
 
+SOURCE_ITEMS = (
+    {
+        "title": "Bureau of Meteorology — Climate Data Online",
+        "description": (
+            "Daily rainfall and temperature data for Perth Metro, station "
+            "009225, for January to December 2024. The app uses these records "
+            "to calculate seasonal averages."
+        ),
+        "url": "https://www.bom.gov.au/climate/data/",
+    },
+    {
+        "title": "Bureau of Meteorology — About rainfall data",
+        "description": "Information about Bureau of Meteorology rainfall data.",
+        "url": "https://www.bom.gov.au/climate/cdo/about/about-rain-data.shtml",
+    },
+    {
+        "title": "Bureau of Meteorology — About air temperature data",
+        "description": (
+            "Information about Bureau of Meteorology air temperature data."
+        ),
+        "url": "https://www.bom.gov.au/climate/cdo/about/about-airtemp-data.shtml",
+    },
+)
+
 
 class NoongarSeasonApp:
     def __init__(self, root):
         self.root = root
         self.root.configure(bg="#f4efe7")
-        self.is_fullscreen = True
-        self.root.attributes("-fullscreen", True)
-        self.root.bind("<Escape>", self.toggle_fullscreen)
-        self.root.bind("<F11>", self.toggle_fullscreen)
         self._configure_styles()
         self.current_frame = None
         self.season_wheel = SeasonWheel(self)
@@ -208,16 +230,7 @@ class NoongarSeasonApp:
             background=[("active", "#244638")],
         )
 
-    def toggle_fullscreen(self, event=None):
-        self.is_fullscreen = not self.is_fullscreen
-        self.root.attributes("-fullscreen", self.is_fullscreen)
-        if not self.is_fullscreen:
-            self.set_windowed_size("1100x760", (620, 480))
-        return "break"
-
     def set_windowed_size(self, geometry, minimum_size):
-        if self.is_fullscreen:
-            return
         requested_width, requested_height = map(int, geometry.split("x"))
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -237,6 +250,12 @@ class NoongarSeasonApp:
         self.clear_page()
         self.root.title("Explore Noongar Seasons")
         self.set_windowed_size("850x550", (700, 500))
+
+        ttk.Button(
+            self.current_frame,
+            text="Sources",
+            command=self.show_sources_window,
+        ).pack(anchor="nw", padx=4, pady=(0, 2))
 
         tk.Label(
             self.current_frame,
@@ -296,29 +315,23 @@ class NoongarSeasonApp:
             wraplength=300,
         ).pack(pady=(25, 12))
 
-        ttk.Button(
-            region_panel,
-            text="Browse season questions",
-            command=self.show_questions_page,
-        ).pack(fill="x", padx=20, pady=(0, 12))
-
         tk.Label(
             region_panel,
-            text="Or find your local Noongar region:",
+            text="Select a question to read its answer:",
             font=("Segoe UI", 10),
             fg="#4a4a4a",
             bg="#f7f3ee",
-        ).pack(anchor="w", padx=20)
+        ).pack(anchor="w", padx=20, pady=(0, 8))
 
         self.region_results = tk.Frame(
             region_panel,
             bg="#ffffff",
             height=12,
         )
-        self.region_results.pack(fill="x", padx=20, pady=(4, 12))
+        self.region_results.pack(fill="both", expand=True, padx=20, pady=(0, 12))
         display_question_results(
             self.region_results,
-            REGION_QUESTIONS,
+            (*REGION_QUESTIONS, *FAQ_ITEMS),
             self.show_question_page,
         )
 
@@ -327,6 +340,116 @@ class NoongarSeasonApp:
             text="Log out",
             command=self.security.show_login_page,
         ).pack(pady=(12, 0))
+
+    def show_sources_window(self):
+        sources_window = tk.Toplevel(self.root)
+        sources_window.title("Sources | Noongar Seasons")
+        sources_window.geometry("700x520")
+        sources_window.minsize(560, 400)
+        sources_window.configure(bg="#f4efe7")
+        sources_window.transient(self.root)
+
+        tk.Label(
+            sources_window,
+            text="Sources",
+            font=("Segoe UI", 22, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+        ).pack(pady=(18, 6))
+        tk.Label(
+            sources_window,
+            text="Data and references used by the application.",
+            font=("Segoe UI", 11),
+            fg="#4a4a4a",
+            bg="#f4efe7",
+        ).pack(pady=(0, 12))
+
+        list_frame = tk.Frame(sources_window, bg="#f4efe7")
+        list_frame.pack(fill="both", expand=True, padx=18, pady=(0, 12))
+        list_frame.rowconfigure(0, weight=1)
+        list_frame.columnconfigure(0, weight=1)
+
+        canvas = tk.Canvas(
+            list_frame,
+            bg="#f4efe7",
+            highlightthickness=0,
+        )
+        scrollbar = ttk.Scrollbar(
+            list_frame,
+            orient="vertical",
+            command=canvas.yview,
+        )
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
+        sources_frame = tk.Frame(canvas, bg="#f4efe7")
+        sources_window_id = canvas.create_window(
+            (0, 0),
+            window=sources_frame,
+            anchor="nw",
+        )
+        sources_frame.bind(
+            "<Configure>",
+            lambda event: canvas.configure(scrollregion=canvas.bbox("all")),
+        )
+        canvas.bind(
+            "<Configure>",
+            lambda event: canvas.itemconfigure(
+                sources_window_id,
+                width=event.width,
+            ),
+        )
+
+        for source in SOURCE_ITEMS:
+            source_panel = tk.Frame(
+                sources_frame,
+                bg="#f7f3ee",
+                bd=1,
+                relief="solid",
+            )
+            source_panel.pack(fill="x", padx=4, pady=5)
+            tk.Label(
+                source_panel,
+                text=source["title"],
+                font=("Segoe UI", 12, "bold"),
+                fg="#24381d",
+                bg="#f7f3ee",
+                anchor="w",
+                justify="left",
+                wraplength=590,
+            ).pack(fill="x", padx=14, pady=(12, 4))
+            tk.Label(
+                source_panel,
+                text=source["description"],
+                font=("Segoe UI", 10),
+                fg="#2b2b2b",
+                bg="#f7f3ee",
+                anchor="w",
+                justify="left",
+                wraplength=590,
+            ).pack(fill="x", padx=14, pady=(0, 6))
+            source_link = tk.Label(
+                source_panel,
+                text=source["url"],
+                font=("Segoe UI", 10, "underline"),
+                fg="#345c4c",
+                bg="#f7f3ee",
+                anchor="w",
+                cursor="hand2",
+                wraplength=590,
+            )
+            source_link.pack(fill="x", padx=14, pady=(0, 12))
+            source_link.bind(
+                "<Button-1>",
+                lambda event, url=source["url"]: webbrowser.open(url),
+            )
+
+        ttk.Button(
+            sources_window,
+            text="Close",
+            command=sources_window.destroy,
+        ).pack(pady=(0, 14))
 
     def show_questions_page(self):
         self.clear_page()
@@ -473,6 +596,10 @@ class NoongarSeasonApp:
         self.current_frame.pack_configure(pady=(20, 0))
         self.root.title("Question information")
         self.set_windowed_size("700x760", (550, 500))
+
+        if question.get("type") == "season_lookup":
+            self.show_season_lookup()
+            return
 
         if question.get("type") != "region_lookup":
             display_question_answer(
@@ -679,6 +806,123 @@ class NoongarSeasonApp:
             command=self.show_home_page,
         ).pack(pady=(0, 8))
         image_placeholder.pack(fill="both", expand=True, padx=20, pady=0)
+
+    def show_season_lookup(self):
+        tk.Label(
+            self.current_frame,
+            text="Which Noongar season is it?",
+            font=("Segoe UI", 20, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+            wraplength=600,
+            justify="center",
+        ).pack(padx=30, pady=(45, 25))
+
+        tk.Label(
+            self.current_frame,
+            text="Enter the day and month, in that order:",
+            font=("Segoe UI", 12, "bold"),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).pack(anchor="w", padx=30, pady=(25, 8))
+
+        date_fields = tk.Frame(self.current_frame, bg="#f7f3ee")
+        date_fields.pack(anchor="w", fill="x", padx=30)
+        date_fields.columnconfigure(0, weight=1)
+        date_fields.columnconfigure(1, weight=1)
+
+        tk.Label(
+            date_fields,
+            text="Day",
+            font=("Segoe UI", 10, "bold"),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).grid(row=0, column=0, sticky="w", padx=(0, 10))
+        tk.Label(
+            date_fields,
+            text="Month",
+            font=("Segoe UI", 10, "bold"),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).grid(row=0, column=1, sticky="w", padx=(10, 0))
+
+        day_entry = tk.Entry(date_fields, font=("Segoe UI", 12), width=12)
+        day_entry.grid(row=1, column=0, sticky="ew", padx=(0, 10))
+        month_entry = tk.Entry(date_fields, font=("Segoe UI", 12), width=12)
+        month_entry.grid(row=1, column=1, sticky="ew", padx=(10, 0))
+
+        result_panel = tk.Frame(
+            self.current_frame,
+            bg="#f7f3ee",
+            bd=1,
+            relief="solid",
+        )
+        result_panel.pack(fill="both", expand=True, padx=45, pady=20)
+
+        result_label = tk.Label(
+            result_panel,
+            text="Enter the day first, then the month (for example: 8, 10).",
+            font=("Segoe UI", 13),
+            fg="#24381d",
+            bg="#f7f3ee",
+            wraplength=540,
+            justify="left",
+        )
+        result_label.pack(anchor="w", padx=25, pady=25)
+
+        more_button = ttk.Button(
+            self.current_frame,
+            text="Tell Me More!!",
+            state="disabled",
+        )
+
+        def update_season_result(event=None):
+            entered_day = day_entry.get().strip()
+            entered_month = month_entry.get().strip()
+            if not entered_day or not entered_month:
+                result_label.configure(
+                    text="Enter both the day and month to find the season."
+                )
+                more_button.configure(state="disabled")
+                return
+
+            try:
+                day = int(entered_day)
+                month = int(entered_month)
+                parsed_date = datetime(2000, month, day)
+            except ValueError:
+                result_label.configure(
+                    text="Enter a valid day first, followed by a month from 1 to 12."
+                )
+                more_button.configure(state="disabled")
+                return
+
+            season_name = season_for_month(parsed_date.month)
+            season = SEASONS[season_name]
+            result_label.configure(
+                text=(
+                    f"{season_name} ({season['months']})\n\n"
+                    f"{season['description']}\n\n"
+                    "Season dates are approximate month guides and can "
+                    "vary with local conditions."
+                )
+            )
+            more_button.configure(
+                state="normal",
+                command=lambda name=season_name: self.show_season_page(name),
+            )
+
+        for date_entry in (day_entry, month_entry):
+            date_entry.bind("<KeyRelease>", update_season_result)
+            date_entry.bind("<Return>", update_season_result)
+        day_entry.focus_set()
+
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 8))
+        more_button.pack(pady=(0, 8))
 
     def show_information_page(self):
         self.season_wheel.show_information_page()
