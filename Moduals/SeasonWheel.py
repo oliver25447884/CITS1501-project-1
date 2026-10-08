@@ -36,6 +36,25 @@ SEASONS = {
     },
 }
 
+SEASON_BY_MONTH = {
+    12: "Birak",
+    1: "Birak",
+    2: "Bunuru",
+    3: "Bunuru",
+    4: "Djeran",
+    5: "Djeran",
+    6: "Makuru",
+    7: "Makuru",
+    8: "Djilba",
+    9: "Djilba",
+    10: "Kambarang",
+    11: "Kambarang",
+}
+
+
+def season_for_month(month):
+    return SEASON_BY_MONTH[month]
+
 
 class SeasonWheel:
     def __init__(self, app):

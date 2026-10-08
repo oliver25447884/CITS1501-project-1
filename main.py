@@ -1,5 +1,6 @@
 import tkinter as tk
 import math
+from datetime import datetime
 from pathlib import Path
 from fractions import Fraction
 from tkinter import ttk
@@ -10,7 +11,7 @@ from Moduals.Question_Modual import (
     display_question_results,
 )
 from Moduals.Security_Modual import SecurityModule
-from Moduals.SeasonWheel import SeasonWheel
+from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
 
 REGION_IMAGE_FILES = {
     "Whadjuk": "Whadjuk.png",
@@ -254,29 +255,23 @@ class NoongarSeasonApp:
             wraplength=300,
         ).pack(pady=(25, 12))
 
-        ttk.Button(
-            region_panel,
-            text="Browse season questions",
-            command=self.show_questions_page,
-        ).pack(fill="x", padx=20, pady=(0, 12))
-
         tk.Label(
             region_panel,
-            text="Or find your local Noongar region:",
+            text="Select a question to read its answer:",
             font=("Segoe UI", 10),
             fg="#4a4a4a",
             bg="#f7f3ee",
-        ).pack(anchor="w", padx=20)
+        ).pack(anchor="w", padx=20, pady=(0, 8))
 
         self.region_results = tk.Frame(
             region_panel,
             bg="#ffffff",
             height=12,
         )
-        self.region_results.pack(fill="x", padx=20, pady=(4, 12))
+        self.region_results.pack(fill="both", expand=True, padx=20, pady=(0, 12))
         display_question_results(
             self.region_results,
-            REGION_QUESTIONS,
+            (*REGION_QUESTIONS, *FAQ_ITEMS),
             self.show_question_page,
         )
 
@@ -433,6 +428,10 @@ class NoongarSeasonApp:
         self.root.title("Question information")
         self.root.geometry("700x760")
         self.root.minsize(550, 500)
+
+        if question.get("type") == "season_lookup":
+            self.show_season_lookup()
+            return
 
         if question.get("type") != "region_lookup":
             display_question_answer(
@@ -639,6 +638,123 @@ class NoongarSeasonApp:
             command=self.show_home_page,
         ).pack(pady=(0, 8))
         image_placeholder.pack(fill="both", expand=True, padx=20, pady=0)
+
+    def show_season_lookup(self):
+        tk.Label(
+            self.current_frame,
+            text="Which Noongar season is it?",
+            font=("Segoe UI", 20, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+            wraplength=600,
+            justify="center",
+        ).pack(padx=30, pady=(45, 25))
+
+        tk.Label(
+            self.current_frame,
+            text="Enter the day and month, in that order:",
+            font=("Segoe UI", 12, "bold"),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).pack(anchor="w", padx=30, pady=(25, 8))
+
+        date_fields = tk.Frame(self.current_frame, bg="#f7f3ee")
+        date_fields.pack(anchor="w", fill="x", padx=30)
+        date_fields.columnconfigure(0, weight=1)
+        date_fields.columnconfigure(1, weight=1)
+
+        tk.Label(
+            date_fields,
+            text="Day",
+            font=("Segoe UI", 10, "bold"),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).grid(row=0, column=0, sticky="w", padx=(0, 10))
+        tk.Label(
+            date_fields,
+            text="Month",
+            font=("Segoe UI", 10, "bold"),
+            fg="#2b2b2b",
+            bg="#f7f3ee",
+        ).grid(row=0, column=1, sticky="w", padx=(10, 0))
+
+        day_entry = tk.Entry(date_fields, font=("Segoe UI", 12), width=12)
+        day_entry.grid(row=1, column=0, sticky="ew", padx=(0, 10))
+        month_entry = tk.Entry(date_fields, font=("Segoe UI", 12), width=12)
+        month_entry.grid(row=1, column=1, sticky="ew", padx=(10, 0))
+
+        result_panel = tk.Frame(
+            self.current_frame,
+            bg="#f7f3ee",
+            bd=1,
+            relief="solid",
+        )
+        result_panel.pack(fill="both", expand=True, padx=45, pady=20)
+
+        result_label = tk.Label(
+            result_panel,
+            text="Enter the day first, then the month (for example: 8, 10).",
+            font=("Segoe UI", 13),
+            fg="#24381d",
+            bg="#f7f3ee",
+            wraplength=540,
+            justify="left",
+        )
+        result_label.pack(anchor="w", padx=25, pady=25)
+
+        more_button = ttk.Button(
+            self.current_frame,
+            text="Tell Me More!!",
+            state="disabled",
+        )
+
+        def update_season_result(event=None):
+            entered_day = day_entry.get().strip()
+            entered_month = month_entry.get().strip()
+            if not entered_day or not entered_month:
+                result_label.configure(
+                    text="Enter both the day and month to find the season."
+                )
+                more_button.configure(state="disabled")
+                return
+
+            try:
+                day = int(entered_day)
+                month = int(entered_month)
+                parsed_date = datetime(2000, month, day)
+            except ValueError:
+                result_label.configure(
+                    text="Enter a valid day first, followed by a month from 1 to 12."
+                )
+                more_button.configure(state="disabled")
+                return
+
+            season_name = season_for_month(parsed_date.month)
+            season = SEASONS[season_name]
+            result_label.configure(
+                text=(
+                    f"{season_name} ({season['months']})\n\n"
+                    f"{season['description']}\n\n"
+                    "Season dates are approximate month guides and can "
+                    "vary with local conditions."
+                )
+            )
+            more_button.configure(
+                state="normal",
+                command=lambda name=season_name: self.show_season_page(name),
+            )
+
+        for date_entry in (day_entry, month_entry):
+            date_entry.bind("<KeyRelease>", update_season_result)
+            date_entry.bind("<Return>", update_season_result)
+        day_entry.focus_set()
+
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 8))
+        more_button.pack(pady=(0, 8))
 
     def show_information_page(self):
         self.season_wheel.show_information_page()
