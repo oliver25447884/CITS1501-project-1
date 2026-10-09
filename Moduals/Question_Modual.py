@@ -243,11 +243,13 @@ REGION_QUESTIONS = [
     },
 ]
 #An interactive map of perths subburbs will be placed here
+from Moduals.UI_Modual import rounded_panel
 
 
 def display_question_answer(answer_frame, question, back_to_questions):
     import tkinter as tk
     from tkinter import ttk
+    from Moduals.UI_Modual import enable_mousewheel_scrolling
 
     tk.Label(
         answer_frame,
@@ -260,6 +262,7 @@ def display_question_answer(answer_frame, question, back_to_questions):
     ).pack(padx=30, pady=(45, 25))
     if question.get("scrollable"):
         answer_panel = tk.Frame(answer_frame, bg="#f7f3ee")
+        rounded_panel(answer_panel, "#f7f3ee", "#d8c8b4")
         answer_panel.pack(fill="both", expand=True, padx=45, pady=(0, 20))
         answer_text = tk.Text(
             answer_panel,
@@ -280,11 +283,15 @@ def display_question_answer(answer_frame, question, back_to_questions):
         answer_text.configure(yscrollcommand=answer_scrollbar.set)
         answer_text.insert("1.0", question["answer"])
         answer_text.configure(state="disabled")
-        answer_text.pack(side="left", fill="both", expand=True)
-        answer_scrollbar.pack(side="right", fill="y")
+        answer_text.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
+        answer_scrollbar.pack(side="right", fill="y", padx=(0, 10), pady=10)
+        enable_mousewheel_scrolling(answer_panel, answer_text)
     else:
+        answer_panel = tk.Frame(answer_frame, bg="#f4efe7")
+        rounded_panel(answer_panel, "#f7f3ee", "#d8c8b4")
+        answer_panel.pack(fill="x", padx=45, pady=(0, 20))
         tk.Label(
-            answer_frame,
+            answer_panel,
             text=question["answer"],
             font=("Segoe UI", 14),
             fg="#2b2b2b",
@@ -293,7 +300,7 @@ def display_question_answer(answer_frame, question, back_to_questions):
             justify="left",
             padx=25,
             pady=25,
-        ).pack(fill="x", padx=45, pady=(0, 20))
+        ).pack(fill="x", padx=4, pady=4)
     ttk.Button(
         answer_frame,
         text="Back to explore",
@@ -305,6 +312,7 @@ def display_question_results(results_frame, questions, open_question):
     import tkinter as tk
     import textwrap
     from tkinter import ttk
+    from Moduals.UI_Modual import enable_mousewheel_scrolling
 
     for child in results_frame.winfo_children():
         child.destroy()
@@ -336,25 +344,8 @@ def display_question_results(results_frame, questions, open_question):
     def resize_questions(event):
         canvas.itemconfigure(questions_window, width=event.width)
 
-    def scroll_questions(event):
-        if getattr(event, "num", None) == 4:
-            direction = -1
-        elif getattr(event, "num", None) == 5:
-            direction = 1
-        else:
-            direction = -1 if event.delta > 0 else 1
-        canvas.yview_scroll(direction, "units")
-        return "break"
-
-    def bind_question_scrolling(widget):
-        widget.bind("<MouseWheel>", scroll_questions)
-        widget.bind("<Button-4>", scroll_questions)
-        widget.bind("<Button-5>", scroll_questions)
-
     questions_frame.bind("<Configure>", update_scroll_region)
     canvas.bind("<Configure>", resize_questions)
-    bind_question_scrolling(canvas)
-    bind_question_scrolling(questions_frame)
 
     if not questions:
         tk.Label(
@@ -378,7 +369,6 @@ def display_question_results(results_frame, questions, open_question):
                     bg="#ffffff",
                 )
                 section_label.pack(anchor="w", padx=10, pady=(10, 3))
-                bind_question_scrolling(section_label)
 
             question_button = ttk.Button(
                 questions_frame,
@@ -386,4 +376,5 @@ def display_question_results(results_frame, questions, open_question):
                 command=lambda question=item: open_question(question),
             )
             question_button.pack(fill="x", padx=10, pady=3)
-            bind_question_scrolling(question_button)
+
+    enable_mousewheel_scrolling(results_frame.master, canvas)

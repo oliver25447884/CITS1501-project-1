@@ -13,6 +13,7 @@ from Moduals.Question_Modual import (
 )
 from Moduals.Security_Modual import SecurityModule
 from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
+from Moduals.UI_Modual import rounded_panel
 
 REGION_IMAGE_FILES = {
     "Whadjuk": "Whadjuk.png",

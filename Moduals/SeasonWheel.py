@@ -6,38 +6,75 @@ import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import ttk
 from PIL import Image, ImageDraw, ImageOps, ImageTk
+from Moduals.UI_Modual import enable_mousewheel_scrolling, rounded_panel
 
 
 SEASONS = {
     "Birak": {
         "months": "December to January",
-        "description": "Birak is the hottest and driest time of the year. It is a season of warmth, long daylight hours, and strong sunshine. The land is often dry and the weather can be very hot.",
+        "description": "The kookaburra pictured scans open ground for insects and small prey, then uses nearby trees for shelter. Bobtail skinks may bask in mild sun but retreat under cover when the ground heats up.",
+        "climate": "Long sunny days, high UV and infrequent rain make Birak hot and dry around Perth. Afternoon sea breezes can cool coastal suburbs, while inland areas often remain hotter. Extended heat raises heat-stress and fire-weather risks.",
         "meaning": "This season marks the height of summer in the Noongar calendar, when people traditionally paid close attention to weather, water, and the changing landscape.",
+        "wildlife": (
+            "Bobtail skinks may bask in mild sun and shelter during extreme heat.",
+            "Western grey kangaroos use open woodland and grassy areas, often in cooler hours.",
+            "Ospreys use suitable coastal and estuary habitats.",
+        ),
     },
     "Bunuru": {
         "months": "February to March",
-        "description": "Bunuru is the second part of summer. It remains warm and can feel very intense, but the weather begins to shift as the season progresses.",
+        "description": "The white blossom and visiting insect show how flowering plants can continue to provide nectar and pollen through late summer. Western grey kangaroos often rest in shade and forage during cooler hours.",
+        "climate": "Bunuru is usually Perth's hottest, driest stretch, with sustained high daytime temperatures, low rainfall and strong evaporation. Coastal sea breezes may bring relief, but persistent heat and dry vegetation increase heat-stress and bushfire risks.",
         "meaning": "This time is associated with long hot days, with the landscape beginning to prepare for the cooler months ahead.",
+        "wildlife": (
+            "Western grey kangaroos often forage in cooler parts of the day.",
+            "Bobtail skinks use shelter to avoid the hottest conditions.",
+            "Black swans are common on suitable wetlands and estuaries.",
+        ),
     },
     "Djeran": {
         "months": "April to May",
-        "description": "Djeran brings the first cooler weather of the year. Days become milder and the landscape begins to change as autumn settles in.",
+        "description": "The black cockatoo pictured feeds among flowering plants and relies on suitable woodland and feeding habitat. Quenda forage among leaf litter and dense vegetation, often around dusk.",
+        "climate": "Djeran is a transition from summer warmth toward cooler autumn weather. Southerly and south-westerly changes bring milder days and lower overnight temperatures; rainfall starts to return, but early-season totals vary considerably between years.",
         "meaning": "This season is linked with leaves falling, cooler winds, and the start of a time of transition as the land moves from warm to cool.",
+        "wildlife": (
+            "Black swans are familiar waterbirds on wetlands, estuaries, and lakes.",
+            "Quenda forage among leaf litter and dense vegetation, often around dusk.",
+            "Carnaby's black-cockatoos use suitable woodland and feeding habitat.",
+        ),
     },
     "Makuru": {
         "months": "June to July",
-        "description": "Makuru is the wettest part of the year. It brings cooler temperatures, rain, and the strongest winter conditions.",
+        "description": "The blue wildflower pictured adds colour to the winter landscape. Rain-replenished wetlands also support motorbike frogs; their distinctive calls can carry across suitable habitat after rain.",
+        "climate": "Makuru is Perth's cold, wet winter period. Frequent cold fronts bring showers, strong westerly and south-westerly winds, and lower daytime temperatures. It is generally the wettest season, although rainfall and individual front strength vary between years.",
         "meaning": "This season is closely connected with the colder months, more rainfall, and the deeper seasonal rhythms of the environment.",
+        "wildlife": (
+            "Motorbike frogs are associated with wetlands, where seasonal rain can replenish habitat.",
+            "Black swans use suitable wetlands and estuaries.",
+            "Western grey kangaroos use open woodland and grassy habitats across the region.",
+        ),
     },
     "Djilba": {
         "months": "August to September",
-        "description": "Djilba is the time of early spring. The weather becomes less cold and the landscape begins to wake up again.",
+        "description": "The yellow bloom pictured reflects the return of flowering plants. Quenda forage for insects and other food among leaf litter and dense cover, often at night; local flowering times shift with rainfall.",
+        "climate": "Djilba is a changeable early-spring transition. Cool fronts and showers can alternate with sunny, warmer days; daytime temperatures trend upward while rainfall gradually eases. Conditions can still shift quickly from one week to the next.",
         "meaning": "This season signals renewal and the first signs of new growth, as nature starts to become active after winter.",
+        "wildlife": (
+            "Quenda forage among leaf litter and dense vegetation, usually at night.",
+            "Motorbike frogs live near suitable south-west wetlands.",
+            "Carnaby's black-cockatoos move between feeding and roosting sites.",
+        ),
     },
     "Kambarang": {
         "months": "October to November",
-        "description": "Kambarang is a season of flowering and new life. The land is green, vibrant, and full of movement as spring grows stronger.",
+        "description": "The orange blossoms pictured are part of the strong spring flowering display across many south-west habitats. Western honey possums feed on nectar in suitable heathland, while other pollinators visit flowering plants.",
+        "climate": "Kambarang brings warming days and increasing sunshine as rainfall generally becomes less frequent. Passing fronts and gusty wind changes remain possible, but longer dry intervals and rising temperatures increase evaporation and drying of soils and vegetation.",
         "meaning": "This is a time of growth, abundance, and the return of energy across the environment as the warmer season approaches.",
+        "wildlife": (
+            "Carnaby's black-cockatoos feed on seeds and native plants.",
+            "Western honey possums feed on nectar in suitable south-west heathland.",
+            "Splendid fairy-wrens are small bushland birds best watched quietly from a distance.",
+        ),
     },
 }
 
@@ -101,13 +138,22 @@ SEASON_IMAGE_FILES = {
     "Kambarang": "kambarang.jpg",
 }
 
+SEASON_IMAGE_CAPTIONS = {
+    "Birak": "Kookaburra",
+    "Bunuru": "White blossom and visiting insect",
+    "Djeran": "Black cockatoo among flowering plants",
+    "Makuru": "Blue wildflower",
+    "Djilba": "Yellow wildflower",
+    "Kambarang": "Orange spring blossoms",
+}
+
 SEASON_GRAPH_FILES = {
-    "Birak": "noongar_seasons_perth (dragged).jpg",
-    "Bunuru": "noongar_seasons_perth (dragged) 2.jpg",
-    "Djeran": "noongar_seasons_perth (dragged) 3.jpg",
-    "Makuru": "noongar_seasons_perth (dragged) 4.jpg",
-    "Djilba": "noongar_seasons_perth (dragged) 5.jpg",
-    "Kambarang": "noongar_seasons_perth (dragged) 6.jpg",
+    "Birak": "season_climate_birak.png",
+    "Bunuru": "season_climate_bunuru.png",
+    "Djeran": "season_climate_djeran.png",
+    "Makuru": "season_climate_makuru.png",
+    "Djilba": "season_climate_djilba.png",
+    "Kambarang": "season_climate_kambarang.png",
 }
 
 SEASON_BY_MONTH = {
@@ -140,7 +186,7 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title("Wheel of Noongar Seasons")
-        app.set_windowed_size("950x900", (760, 780))
+        app.set_windowed_size("950x760", (760, 700))
         current_frame = app.current_frame
 
         title = tk.Label(
@@ -153,60 +199,113 @@ class SeasonWheel:
         )
         title.pack()
 
-        intro = tk.Label(
-            current_frame,
-            text="The six seasons recognised by Noongar people in the South West of Western Australia.",
-            font=("Segoe UI", 11),
-            fg="#4a4a4a",
-            bg="#f4efe7",
-            wraplength=780,
-            justify="center",
-        )
-        intro.pack(pady=(0, 12))
-
         wheel_section = tk.Frame(current_frame, bg="#f4efe7")
-        wheel_section.pack(fill="x", padx=20, pady=(0, 5))
+        wheel_section.pack(fill="both", expand=True, padx=20, pady=(0, 5))
 
         canvas = tk.Canvas(
             wheel_section,
-            width=500,
-            height=470,
+            width=420,
+            height=420,
             bg="#f4efe7",
             highlightthickness=0,
         )
         canvas.pack(side="left", padx=(0, 16))
 
+        screen_width = self.app.root.winfo_screenwidth()
+        window_width = min(950, max(400, screen_width - 48))
+        preview_width = max(160, window_width - 476)
+        preview_wraplength = max(150, min(300, preview_width - 36))
+        details_column = tk.Frame(wheel_section, bg="#f4efe7")
+        details_column.pack(side="left", fill="both", expand=True)
+
         preview_panel = tk.Frame(
-            wheel_section,
+            details_column,
             bg="#f7f3ee",
-            padx=22,
-            pady=22,
-            highlightbackground="#d8c8b4",
-            highlightthickness=1,
+            height=148,
+            padx=14,
+            pady=12,
         )
-        preview_panel.pack(side="left", fill="both", expand=True, pady=55)
+        preview_panel.pack_propagate(False)
+        rounded_panel(preview_panel, "#f7f3ee", "#d8c8b4", radius=6)
+        preview_panel.pack(fill="x", pady=(0, 10))
+        preview_font = tkfont.Font(root=app.root, family="Segoe UI", size=10)
         preview_title = tk.Label(
             preview_panel,
             text="Season insight",
-            font=("Segoe UI", 17, "bold"),
+            font=("Segoe UI", 14, "bold"),
             fg="#24381d",
             bg="#f7f3ee",
         )
-        preview_title.pack(anchor="w", pady=(0, 12))
+        preview_title.pack(anchor="w", pady=(0, 5))
         preview_description = tk.Label(
             preview_panel,
-            text="interact with the wheel to unlock knowledge",
-            font=("Segoe UI", 11),
+            text="Move over or select a season to explore its local signs.",
+            font=preview_font,
             fg="#4e5c46",
             bg="#f7f3ee",
-            wraplength=300,
+            wraplength=preview_wraplength,
+            height=5,
+            anchor="nw",
             justify="left",
         )
         preview_description.pack(anchor="w", fill="x")
 
-        center_x, center_y = 250, 225
-        outer_radius = 190
-        inner_radius = 82
+        overview_panel = tk.Frame(
+            details_column,
+            bg="#f7f3ee",
+            padx=14,
+            pady=12,
+        )
+        rounded_panel(overview_panel, "#f7f3ee", "#d8c8b4", radius=6)
+        overview_panel.pack(fill="x", pady=(0, 10))
+        tk.Label(
+            overview_panel,
+            text="ABOUT THE SIX SEASONS",
+            font=("Segoe UI", 9, "bold"),
+            fg="#345c4c",
+            bg="#f7f3ee",
+        ).pack(anchor="w", pady=(0, 4))
+        tk.Label(
+            overview_panel,
+            text=(
+                "The Noongar seasonal calendar describes six connected periods "
+                "through the year, recognised through changes in weather, plants, "
+                "animals and the condition of Country. Around Perth, Birak, Bunuru, "
+                "Djeran, Makuru, Djilba and Kambarang offer a local guide; signs and "
+                "timing vary between places and years rather than following fixed dates."
+            ),
+            font=("Segoe UI", 9),
+            fg="#4a4a4a",
+            bg="#f7f3ee",
+            wraplength=preview_wraplength,
+            justify="left",
+        ).pack(anchor="w", fill="x")
+
+        feature_path = Path(__file__).resolve().parent.parent / "Data" / "DjeranBlogFeatureNRM.jpg"
+        feature_source = self._open_image(feature_path)
+        if feature_source:
+            feature_width = max(160, min(320, preview_width - 36))
+            feature_image = ImageOps.contain(
+                feature_source,
+                (feature_width, round(feature_width * 9 / 16)),
+                method=Image.Resampling.LANCZOS,
+            )
+            self.overview_photo = ImageTk.PhotoImage(
+                feature_image,
+                master=current_frame,
+            )
+            feature_panel = tk.Frame(details_column, bg="#f4efe7")
+            feature_panel.pack(fill="x")
+            tk.Label(
+                feature_panel,
+                image=self.overview_photo,
+                bg="#f4efe7",
+                bd=0,
+            ).pack()
+
+        center_x, center_y = 210, 210
+        outer_radius = 176
+        inner_radius = 74
         colours = ["#d77a61", "#e2a653", "#c9b458", "#7596a8", "#77a889", "#9cbd82"]
         season_names = list(SEASONS)
 
@@ -309,13 +408,20 @@ class SeasonWheel:
 
             if season_name is None:
                 preview_title.configure(text="Season insight")
-                preview_description.configure(
-                    text="interact with the wheel to unlock knowledge"
-                )
+                description = "Move over or select a season to explore its local signs."
             else:
                 preview_title.configure(text=season_name)
-                preview_description.configure(
-                    text=SEASONS[season_name]["description"]
+                description = SEASONS[season_name]["description"]
+
+            description_lines = self._wrap_text(
+                description,
+                preview_font,
+                preview_wraplength,
+            ).splitlines()
+            if len(description_lines) > 5:
+                description_lines = [*description_lines[:4], "..."]
+            preview_description.configure(
+                text="\n".join(description_lines)
                 )
 
         canvas.bind("<Motion>", update_season_preview)
@@ -336,7 +442,7 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title(f"{season_name} | Noongar Seasons")
-        app.root.geometry("700x500")
+        app.set_windowed_size("1000x780", (640, 480))
         current_frame = app.current_frame
 
         season = SEASONS[season_name]
@@ -356,11 +462,11 @@ class SeasonWheel:
             bg="#17392f",
         ).pack(side="right", padx=8)
 
-        scroll_area = tk.Frame(app.current_frame, bg="#172a24")
+        scroll_area = tk.Frame(app.current_frame, bg="#f4efe7")
         scroll_area.pack(fill="both", expand=True)
         page_canvas = tk.Canvas(
             scroll_area,
-            bg="#172a24",
+            bg="#f4efe7",
             highlightthickness=0,
         )
         scrollbar = ttk.Scrollbar(
@@ -376,9 +482,6 @@ class SeasonWheel:
             "<Configure>",
             lambda event: self.render_season_page(event, page_canvas, season_name, season),
         )
-        page_canvas.bind("<MouseWheel>", lambda event: self._scroll_page(page_canvas, event))
-        page_canvas.bind("<Button-4>", lambda event: self._scroll_page(page_canvas, event))
-        page_canvas.bind("<Button-5>", lambda event: self._scroll_page(page_canvas, event))
         page_canvas.after_idle(
             lambda: self.render_season_page(
                 None,
@@ -387,16 +490,7 @@ class SeasonWheel:
                 season,
             )
         )
-
-    def _scroll_page(self, canvas, event):
-        if getattr(event, "num", None) == 4:
-            direction = -1
-        elif getattr(event, "num", None) == 5:
-            direction = 1
-        else:
-            direction = -1 if event.delta > 0 else 1
-        canvas.yview_scroll(direction, "units")
-        return "break"
+        enable_mousewheel_scrolling(app.current_frame, page_canvas)
 
     def _open_image(self, image_path):
         path = Path(image_path)
@@ -430,23 +524,64 @@ class SeasonWheel:
         body_font = tkfont.Font(root=self.app.root, family="TkDefaultFont", size=12)
         small_font = tkfont.Font(root=self.app.root, family="TkDefaultFont", size=10)
         title_font = tkfont.Font(root=self.app.root, family="Georgia", size=30, weight="bold")
-        margin = min(38, max(20, int(width * 0.055)))
-        text_width = max(220, width - margin * 2)
+        margin = min(38, max(12, int(width * 0.055)))
+        text_width = max(1, width - margin * 2)
         y = 34
         text_items = []
+        section_panels = []
 
-        def add_text(text, font, colour, gap):
+        def add_text(text, font, colour, gap, justify="left"):
             nonlocal y
             wrapped = self._wrap_text(text, font, text_width)
-            text_items.append((y, wrapped, font, colour, text_width))
+            text_items.append((y, wrapped, font, colour, text_width, justify))
             line_count = max(1, len(wrapped.splitlines()))
             y += line_count * font.metrics("linespace") + gap
 
-        add_text(season["months"].upper(), small_font, "#f5d985", 4)
-        add_text(season_name, title_font, "#ffffff", 14)
-        add_text(season["description"], body_font, "#ffffff", 10)
-        add_text(season["meaning"], small_font, "#f3f2ec", 24)
-        add_text("PERTH DAILY CLIMATE  ·  TEMPERATURE AND RAINFALL", small_font, "#ffffff", 5)
+        add_text(season["months"].upper(), small_font, "#7a6728", 4)
+        add_text(season_name, title_font, "#24381d", 14)
+        wildlife_panel_top = y - 10
+        add_text("SEASON & WILDLIFE", small_font, "#345c4c", 5)
+        add_text(season["description"], body_font, "#2b2b2b", 10)
+        add_text(season["meaning"], small_font, "#455247", 18)
+        add_text("WILDLIFE TO LOOK OUT FOR", small_font, "#345c4c", 5)
+        add_text("  ".join(season["wildlife"]), body_font, "#2b2b2b", 5)
+        add_text(
+            "These are examples from suitable local habitats, not fixed season indicators.",
+            small_font,
+            "#5b6258",
+            18,
+        )
+
+        image_path = Path(__file__).resolve().parent.parent / "Data" / "Regions" / SEASON_IMAGE_FILES[season_name]
+        image_source = self._open_image(image_path)
+        landscape_image = None
+        landscape_y = y
+        if image_source:
+            landscape_image = ImageOps.contain(
+                image_source,
+                (min(text_width, 900), 360),
+                method=Image.Resampling.LANCZOS,
+            ).convert("RGBA")
+            y += landscape_image.height + 8
+            add_text(
+                SEASON_IMAGE_CAPTIONS[season_name],
+                small_font,
+                "#5b6258",
+                18,
+                justify="center",
+            )
+        else:
+            add_text("Season image unavailable.", small_font, "#5b6258", 18)
+
+        section_panels.append((wildlife_panel_top, y - 10, "#f7f3ee", "#d8c8b4"))
+        y += 12
+
+        climate_panel_top = y - 10
+        add_text("CLIMATE CONDITIONS", small_font, "#345c4c", 5)
+        add_text(season["climate"], body_font, "#2b2b2b", 18)
+        section_panels.append((climate_panel_top, y - 10, "#e9efe9", "#becdbd"))
+
+        add_text("PERTH DAILY CLIMATE  -  TEMPERATURE AND RAINFALL", small_font, "#24381d", 5)
 
         graph_data = SEASON_GRAPH_DATA.get(season_name, {})
         graph_summary = (
@@ -455,50 +590,49 @@ class SeasonWheel:
             f"{graph_data.get('rainfall_daily', 0):.2f} mm/day  ·  Total "
             f"{graph_data.get('rainfall_total', 0):.1f} mm"
         )
-        add_text(graph_summary, small_font, "#f3f2ec", 10)
+        add_text(graph_summary, small_font, "#455247", 10)
 
         graph_path = Path(__file__).resolve().parent.parent / "Data" / "Regions" / SEASON_GRAPH_FILES[season_name]
         graph_source = self._open_image(graph_path)
-        graph_width = min(text_width, graph_source.width) if graph_source else text_width
-        graph_height = (
-            round(graph_source.height * graph_width / graph_source.width)
+        panel_padding = min(12, max(0, (text_width - 1) // 24))
+        graph_width = (
+            min(max(1, text_width - panel_padding * 2), graph_source.width)
             if graph_source
-            else 280
+            else 0
         )
+        graph_height = round(graph_source.height * graph_width / graph_source.width) if graph_source else 0
         graph_y = y
-        y += graph_height + 24
+        y += graph_height + (panel_padding * 2 + 24 if graph_source else 10)
 
         if graph_data.get("note"):
             note = self._wrap_text(graph_data["note"], small_font, text_width)
-            text_items.append((y, note, small_font, "#ffffff", text_width))
+            text_items.append((y, note, small_font, "#455247", text_width, "left"))
             y += max(1, len(note.splitlines())) * small_font.metrics("linespace") + 24
 
         content_height = max(y + 30, canvas.winfo_height())
-        photo_path = Path(__file__).resolve().parent.parent / "Data" / "Regions" / SEASON_IMAGE_FILES[season_name]
-        photo_source = self._open_image(photo_path)
-        if photo_source:
-            backdrop = ImageOps.fit(
-                photo_source,
-                (width, content_height),
-                method=Image.Resampling.LANCZOS,
-            ).convert("RGBA")
-        else:
-            backdrop = Image.new("RGBA", (width, content_height), "#20352d")
+        backdrop = Image.new("RGBA", (width, content_height), "#f4efe7")
+        panel_draw = ImageDraw.Draw(backdrop)
+        panel_x = max(6, margin - 10)
+        for panel_top, panel_bottom, panel_fill, panel_outline in section_panels:
+            panel_draw.rounded_rectangle(
+                (panel_x, panel_top, width - panel_x, panel_bottom),
+                radius=7,
+                fill=panel_fill,
+                outline=panel_outline,
+                width=1,
+            )
 
-        text_band_height = max(1, graph_y - 12)
-        band = Image.new(
-            "RGBA",
-            (width, text_band_height),
-            (17, 40, 31, 172),
-        )
-        backdrop.alpha_composite(band, (0, 0))
+        if landscape_image:
+            backdrop.alpha_composite(
+                landscape_image,
+                ((width - landscape_image.width) // 2, landscape_y),
+            )
 
         if graph_source:
             chart = graph_source.resize(
                 (graph_width, graph_height),
                 Image.Resampling.LANCZOS,
             ).convert("RGBA")
-            panel_padding = 12
             panel_width = graph_width + panel_padding * 2
             panel_height = graph_height + panel_padding * 2
             panel = Image.new(
@@ -516,21 +650,21 @@ class SeasonWheel:
             panel.alpha_composite(chart, (panel_padding, panel_padding))
             backdrop.alpha_composite(
                 panel,
-                ((width - panel_width) // 2, graph_y - panel_padding),
+                (max(0, (width - panel_width) // 2), graph_y - panel_padding),
             )
 
         self.page_photo = ImageTk.PhotoImage(backdrop.convert("RGB"), master=canvas)
         canvas.delete("all")
         canvas.create_image(0, 0, image=self.page_photo, anchor="nw")
-        for text_y, text, font, colour, wrap_width in text_items:
+        for text_y, text, font, colour, wrap_width, justify in text_items:
             canvas.create_text(
-                margin,
+                width // 2 if justify == "center" else margin,
                 text_y,
                 text=text,
                 fill=colour,
                 font=font,
                 width=wrap_width,
-                anchor="nw",
-                justify="left",
+                anchor="n" if justify == "center" else "nw",
+                justify=justify,
             )
         canvas.configure(scrollregion=(0, 0, width, content_height))
