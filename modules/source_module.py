@@ -8,13 +8,40 @@ from tkinter import ttk
 # Reference content stays beside the dialog that presents it.
 SOURCE_ITEMS = (
     {
+        "title": "Dr Richard Walley — Heritage plaque artwork story",
+        "description": (
+            "Cultural context from Nyoongar-Yamatji Elder and artist Dr Richard "
+            "Walley: Bonara (the seasons) connects Boodjar, kaatitj, people, "
+            "plants and animals. The app attributes this explanation to him "
+            "and recognises that knowledge differs between communities."
+        ),
+        "url": "https://www.wa.gov.au/government/document-collections/heritage-plaque-artwork-story-and-artist-biography",
+    },
+    {
         "title": "Department of Primary Industries and Regional Development — The Noongar Six Seasons",
         "description": (
-            "Public West Coast regional information on seasonal names, signs, "
-            "weather, plants, animals, and cultural practices. The app treats "
-            "this as one regional account, not a universal description."
+            "Perth-region season names and examples of seasonal signs, "
+            "including plants, animals, weather and cultural practices. "
+            "These examples are place-specific, not a universal description."
         ),
         "url": "https://marinewaters.fish.wa.gov.au/resource/fact-sheet-the-noongar-six-seasons/",
+    },
+    {
+        "title": "Kurongkurl Katitjin, Edith Cowan University — Nyoongar Six Seasons",
+        "description": (
+            "Educational overview of the six seasons and examples of how "
+            "weather, plants and animal life help people read seasonal change."
+        ),
+        "url": "https://www.ecu.edu.au/centres/kurongkurl-katitjin/cultural-leadership/nyoongar-six-seasons",
+    },
+    {
+        "title": "Your Move — Noongar Season: Makuru",
+        "description": (
+            "Government of Western Australia school resource noting the "
+            "blueberry lily's blue and purple flowers during Makuru; adapted "
+            "from Edith Cowan University's seasonal resource."
+        ),
+        "url": "https://yourmove.org.au/getmedia/97ac12e5-3f45-4b19-9f23-1dac79276d1d/YM-Schools-Noongar-Season-Makuru-%28Interactive%29.pdf",
     },
     {
         "title": "Bureau of Meteorology — Climate Data Online",

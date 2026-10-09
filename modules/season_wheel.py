@@ -2,7 +2,6 @@
 
 import math
 import tkinter as tk
-import webbrowser
 from pathlib import Path
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -13,49 +12,49 @@ from PIL import Image, ImageTk
 SEASONS = {
     "Birak": {
         "months": "December to January",
-        "description": "First summer, when warmer and drier weather becomes established across the south-west.",
-        "meaning": "A public West Coast account describes Birak as the season of the young, with young animals beginning to leave nests. It also describes cultural burning as one way Noongar people cared for Country. Burning is guided by local knowledge and conditions; this summary is not a how-to guide.",
-        "image_context": "The image shows a laughing kookaburra hunting from a branch. Kookaburras eat insects and small animals; this species was introduced to Western Australia. It is included as a present-day wildlife example, not as a Noongar seasonal symbol.",
+        "description": "Birak opens with hot, dry days as summer heat settles across the Perth region.",
+        "meaning": "Birak is a time to notice new life and changing conditions on Country. Noongar cultural burning is a form of caring for Country, guided by deep local knowledge of place, plants, weather and timing. It is not a single practice applied everywhere.",
+        "image_context": "Birak brings the first summer heat and a surge of movement as young animals begin leaving their nests. Here, a kookaburra pauses in the open, alert to movement in the grass—a lively glimpse of birdlife in the summer landscape.",
         "weather": "Around Perth, hot easterly winds are common in the morning. Coastal areas often cool later with a south-westerly sea breeze, sometimes called the Fremantle Doctor. These are typical patterns, not a daily forecast.",
         "background": "#F4EEE8", "accent": "#9A5948",
     },
     "Bunuru": {
         "months": "February to March",
-        "description": "Second summer, often the hottest and driest part of the year around Perth.",
-        "meaning": "A public West Coast account describes families spending time near coastal estuaries and waterways during Bunuru. Fish and other seafood were important foods. These practices and teachings are connected to particular places and communities.",
-        "image_context": "The photo shows white blossom and a visiting insect. Flower visitors may gather nectar or pollen and can transfer pollen between flowers. The plant and insect have not been identified, so the image is a general ecological example rather than a claimed seasonal marker.",
+        "description": "Bunuru is the hottest, driest part of summer around Perth, with afternoon coastal breezes bringing some relief.",
+        "meaning": "In this regional seasonal account, Bunuru is closely connected with coastal estuaries and waterways, where families could gather food such as fish. The season shows how knowledge of place shapes movement, food gathering and care for community.",
+        "image_context": "In Bunuru's hot, dry summer, every bloom is a small source of life. A visiting insect gathers from the flower and may carry pollen onward, linking one plant to the next and helping sustain future flowering.",
         "weather": "February and March are usually Perth's hottest, driest months. Hot easterlies and a cooler afternoon sea breeze are common near the coast, although wind and temperature change from day to day.",
         "background": "#F5EEE3", "accent": "#A66B3F",
     },
     "Djeran": {
         "months": "April to May",
-        "description": "An autumn transition as warm days ease and nights begin to cool.",
-        "meaning": "A public West Coast account connects Djeran with cooler nights, dewy mornings, red flowers and fresh green shoots. It describes seasonal changes in where families travelled for food and shelter. Local signs and practices differ between places.",
-        "image_context": "The photo shows a black cockatoo among flowering plants. Black cockatoos feed on native seeds, flowers or insect larvae, with diets differing by species. The bird is not identified to species here, and the image is not presented as a cultural symbol.",
+        "description": "Djeran brings cooler nights and dewy mornings as warm days ease and autumn rain becomes more likely.",
+        "meaning": "Red flowers and new green shoots are among the signs associated with Djeran in the Perth-region account. Reading these changes is a way of paying attention to Country as conditions shift and shape where people, plants and animals find food and shelter.",
+        "image_context": "Djeran's cooler nights and dewy mornings bring fresh growth into the woodland. A cockatoo among flowering branches captures that lively transition; cockatoos forage among trees for seeds, flowers or insects, depending on the species.",
         "weather": "Around Perth, nights cool and rain becomes more likely as Djeran progresses. South-westerly winds can become more noticeable. Daily conditions vary, and the graph shows temperature and rainfall rather than wind.",
         "background": "#EDF1E9", "accent": "#61785B",
     },
     "Makuru": {
         "months": "June to July",
-        "description": "The cold, wet season, when rain and cold fronts become more frequent.",
-        "meaning": "A public West Coast account describes waterways filling and animals beginning to pair during Makuru. It also records movement between coastal and inland places. This is one regional account; seasonal knowledge varies across Noongar Country.",
-        "image_context": "The photo shows a blue wildflower. The species is not identified. Flowers can provide food for insects, while flowering time can respond to local rain and temperature; this photo is an ecological illustration, not a universal seasonal sign.",
+        "description": "Makuru is Perth's cold, wet season, with frequent fronts and strong westerly or southerly winds.",
+        "meaning": "As waterways fill, Makuru can bring movement between coastal and inland places; animal pairing is also noted in this regional account. The season is a reminder that Country's waters, weather and living things are connected—and that seasonal knowledge is grounded in particular places.",
+        "image_context": "Makuru's winter rain refreshes Country, and blue-purple flowers make a vivid seasonal sign. Blueberry lily blooms are noted during this season; the flower pictured echoes that winter colour, though its species has not been confirmed.",
         "weather": "Perth winter brings more rain, cold fronts and stronger westerly or southerly winds. The supplied 2024 record has one missing temperature reading for Makuru; wind is described here but is not plotted in the graph.",
         "background": "#EAF1F3", "accent": "#54788A",
     },
     "Djilba": {
         "months": "August to September",
-        "description": "A changeable transition toward spring, with cool days mixed with warmer spells.",
-        "meaning": "A public West Coast account describes cold, rainy or windy days alternating with sunshine. It also notes newborn animals and woodland birds tending nests. These signs are regional observations and vary with local conditions.",
-        "image_context": "The photo shows yellow blossoms. The plant is not identified. Flowering can be one of many local signs of seasonal change, and blossoms may provide pollen or nectar for insects; no specific cultural meaning is assigned to this image.",
+        "description": "Djilba weather shifts between cold, rainy or windy days and brighter, warmer spells.",
+        "meaning": "Newborn animals and woodland birds tending nests are signs associated with Djilba in the Perth-region account. The season asks for close observation: a warm day does not mean winter has ended, and living things respond to the sequence of conditions around them.",
+        "image_context": "Djilba can turn from rain and wind to warm sunshine in a few days. Yellow flowers brighten this changing landscape, while newborn animals and woodland birds tending nests signal that spring is stirring.",
         "weather": "Djilba can bring cooler, wet and windy days followed by warmer, sunnier spells. The graph shows temperature and rainfall; wind is part of the seasonal context but is not measured in this chart.",
         "background": "#F2EDF3", "accent": "#8A6C8B",
     },
     "Kambarang": {
         "months": "October to November",
-        "description": "Second spring, when warmer weather returns and many plants flower.",
-        "meaning": "A public West Coast account describes orchids, kangaroo paws and banksias flowering during Kambarang. It also notes fruiting plants and increased animal activity. Flowering times and other signs vary by place and year.",
-        "image_context": "The photo shows orange flowering plants, but the species is not identified. Flowering plants can provide nectar and pollen for insects and birds. This image is a general ecological example, not a claim that this plant marks Kambarang everywhere.",
+        "description": "Kambarang's warmer, drier spring weather builds toward the heat of summer.",
+        "meaning": "Orchids, kangaroo paws and banksias are among the plants associated with Kambarang in this regional account; fruiting and increased animal activity are also noted. These signs reveal a living seasonal pattern, with timing that shifts from place to place and year to year.",
+        "image_context": "Kambarang is a burst of spring colour as warmer days bring many plants into flower. Orchids, kangaroo paws and banksias are among the blooms associated with this season; the orange flowers here add their own bright note to that abundance.",
         "weather": "Around Perth, warmer conditions and longer dry periods build toward summer, with fewer cold fronts. Wind direction varies and is not measured in this chart.",
         "background": "#F4F0E1", "accent": "#8E793C",
     },
@@ -74,12 +73,12 @@ SEASON_CLIMATE_SUMMARIES = {
 
 # Captions accompany the nature images loaded on season detail pages.
 SEASON_IMAGE_CAPTIONS = {
-    "Birak": "Kookaburra",
-    "Bunuru": "White blossom and visiting insect",
-    "Djeran": "Black cockatoo among flowering plants",
-    "Makuru": "Blue wildflower",
-    "Djilba": "Yellow wildflower",
-    "Kambarang": "Orange spring blossoms",
+    "Birak": "Young life in summer",
+    "Bunuru": "A bloom and its pollinator",
+    "Djeran": "Cockatoo in autumn woodland",
+    "Makuru": "Blue winter blossoms",
+    "Djilba": "Fresh blooms as spring stirs",
+    "Kambarang": "A burst of spring colour",
 }
 
 
@@ -404,7 +403,7 @@ class SeasonWheel:
             """Match content width to the viewport and reflow wrapped labels."""
             page.itemconfigure(content_window, width=event.width)
             for label in wrapping_labels:
-                label.configure(wraplength=min(700, max(280, event.width - 135)))
+                label.configure(wraplength=min(900, max(280, event.width - 105)))
 
         page.bind("<Configure>", resize_content)
         page.bind_all(
@@ -450,8 +449,8 @@ class SeasonWheel:
             justify="center",
         ).pack(padx=24, pady=(0, 12))
 
-        def make_card(title, body, *, italic=False):
-            """Create a reusable text card and track its responsive label."""
+        def make_card(title, body, *, lead=None, italic=False):
+            """Create a responsive, consistently aligned information card."""
             card = tk.Frame(
                 content,
                 bg="#fffdf9",
@@ -459,49 +458,61 @@ class SeasonWheel:
                 highlightthickness=1,
             )
             card.pack(fill="x", padx=28, pady=8)
+            tk.Frame(card, bg=accent, width=5).pack(side="left", fill="y")
+            text_area = tk.Frame(card, bg="#fffdf9")
+            text_area.pack(side="left", fill="both", expand=True, padx=18)
             tk.Label(
-                card,
+                text_area,
                 text=title,
                 font=("Segoe UI", 12, "bold"),
                 fg=accent,
                 bg="#fffdf9",
-            ).pack(anchor="w", padx=20, pady=(15, 7))
+            ).pack(anchor="w", pady=(14, 6))
+            if lead:
+                lead_panel = tk.Frame(text_area, bg=page_bg)
+                lead_panel.pack(fill="x", pady=(0, 9))
+                lead_label = tk.Label(
+                    lead_panel,
+                    text=lead,
+                    font=("Segoe UI", 11, "bold"),
+                    fg=accent,
+                    bg=page_bg,
+                    wraplength=760,
+                    justify="left",
+                    anchor="w",
+                )
+                lead_label.pack(fill="x", padx=12, pady=10)
+                wrapping_labels.append(lead_label)
             body_label = tk.Label(
-                card,
+                text_area,
                 text=body,
-                font=("Segoe UI", 11, "italic" if italic else "normal"),
-                fg="#2b2b2b",
+                font=("Segoe UI", 10, "italic" if italic else "normal"),
+                fg="#445140",
                 bg="#fffdf9",
                 wraplength=760,
                 justify="left",
+                anchor="w",
             )
-            body_label.pack(anchor="w", fill="x", padx=20, pady=(0, 16))
+            body_label.pack(fill="x", pady=(0, 14))
             wrapping_labels.append(body_label)
             return card
 
         make_card(
-            "Season story and signs",
-            f"{season['description']}\n\n{season['meaning']}\n\n"
-            "This summary draws on one public West Coast account. Noongar "
-            "knowledge and seasonal signs vary between Country and communities.",
-        )
-        source_link = tk.Label(
-            content,
-            text="Read the DPIRD West Coast season fact sheet ↗",
-            font=("Segoe UI", 9, "underline"),
-            fg="#345c4c",
-            bg=page_bg,
-            cursor="hand2",
-        )
-        source_link.pack(anchor="w", padx=40, pady=(0, 6))
-        source_link.bind(
-            "<Button-1>",
-            lambda _event: webbrowser.open(
-                "https://marinewaters.fish.wa.gov.au/resource/fact-sheet-the-noongar-six-seasons/"
-            ),
+            "Noongar meaning and seasonal knowledge",
+            f"{season['meaning']}\n\n"
+            "Dr Richard Walley's explanation of Bonara (the seasons) joins "
+            "spiritual understanding with knowledge of Boodjar, people, "
+            "plants and animals. It describes a relationship of living "
+            "within Country, shaped by kaatitj. This is one attributed "
+            "perspective; Noongar knowledge is diverse and grounded in "
+            "particular Country and community.",
         )
 
-        make_card("Perth weather and wind", season["weather"])
+        make_card(
+            "Perth weather and wind",
+            season["weather"],
+            lead=season["description"],
+        )
 
         stats_row = tk.Frame(content, bg=page_bg)
         stats_row.pack(fill="x", padx=28, pady=(2, 8))
