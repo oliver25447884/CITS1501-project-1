@@ -49,7 +49,7 @@ The 11 tests cover CSV loading, date and value validation, missing readings, and
 Sources: [Bureau of Meteorology Climate Data Online](https://www.bom.gov.au/climate/data/) · [DPIRD Noongar Six Seasons fact sheet](https://marinewaters.fish.wa.gov.au/resource/fact-sheet-the-noongar-six-seasons/).
 
 - [Architecture diagram](docs/ARCHITECTURE.md)
-- [Deployment evidence](docs/DEPLOYMENT_EVIDENCE.md)
+- [Deployment](docs/DEPLOYMENT.md)
 - [AI interaction log](docs/AI-LOG.md)
 - [Written report](docs/Written%20report.md)
 

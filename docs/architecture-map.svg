@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1130" role="img" aria-labelledby="title description">
+  <title id="title">Noongar Seasons application architecture map</title>
+  <desc id="description">A map showing the user entering the main Tkinter app, the app routing to five feature modules, and those modules using local files, shared season mapping, and climate calculations.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#527b72"/>
+    </marker>
+    <marker id="arrow-gold" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a8873f"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; fill: #26392f; }
+      .title { font-size: 34px; font-weight: 700; }
+      .subtitle { font-size: 17px; fill: #59685e; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 1.4px; fill: #65766d; }
+      .main-title { font-size: 27px; font-weight: 700; fill: #ffffff; }
+      .main-copy { font-size: 16px; fill: #edf4ef; }
+      .card-title { font-size: 19px; font-weight: 700; }
+      .module { font-size: 15px; font-weight: 600; fill: #5c6a61; }
+      .copy { font-size: 15px; fill: #3f5047; }
+      .small { font-size: 13px; fill: #66746b; }
+      .wire-label { font-size: 14px; font-weight: 600; fill: #527b72; }
+      .node { fill: #fffdf9; stroke: #d9d0c1; stroke-width: 1.5; }
+      .wire { fill: none; stroke: #527b72; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+      .data-wire { fill: none; stroke: #a8873f; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1130" fill="#f5f2eb"/>
+  <text x="65" y="58" class="title">Noongar Seasons app</text>
+  <text x="66" y="91" class="subtitle">A map of the screens, shared logic, and local files behind the desktop app</text>
+  <text x="65" y="132" class="eyebrow">APP FLOW</text>
+
+  <!-- User enters the shared app shell. -->
+  <rect x="790" y="112" width="220" height="52" rx="26" fill="#e7eee8" stroke="#bfd0c5" stroke-width="1.5"/>
+  <text x="900" y="145" text-anchor="middle" class="card-title" font-size="17">User</text>
+
+  <!-- Main app sends screen calls and receives callbacks. -->
+
+  <rect x="575" y="215" width="650" height="135" rx="18" fill="#345c4c"/>
+  <text x="900" y="264" text-anchor="middle" class="main-title">App shell · main.py</text>
+  <text x="900" y="296" text-anchor="middle" class="main-copy">Creates the Tkinter window and shared app state</text>
+  <text x="900" y="322" text-anchor="middle" class="main-copy">Routes buttons and selections to each screen</text>
+
+
+  <!-- Feature modules. -->
+  <g>
+    <rect x="30" y="430" width="320" height="175" rx="14" class="node"/>
+    <path d="M44 430 H336 Q350 430 350 444 V472 H30 V444 Q30 430 44 430" fill="#547f74"/>
+    <text x="52" y="458" class="card-title" fill="#ffffff">Login &amp; security</text>
+    <text x="52" y="500" class="module">modules/security_module.py</text>
+    <text x="52" y="531" class="copy">Startup, login, password setup</text>
+    <text x="52" y="554" class="copy">and recovery screens</text>
+    <text x="52" y="582" class="small">Saves credentials on this computer</text>
+  </g>
+
+  <g>
+    <rect x="385" y="430" width="320" height="175" rx="14" class="node"/>
+    <path d="M399 430 H691 Q705 430 705 444 V472 H385 V444 Q385 430 399 430" fill="#8d783f"/>
+    <text x="407" y="458" class="card-title" fill="#ffffff">Season wheel</text>
+    <text x="407" y="500" class="module">modules/season_wheel.py</text>
+    <text x="407" y="531" class="copy">Interactive wheel and six detail pages</text>
+    <text x="407" y="554" class="copy">Season descriptions, colours and captions</text>
+    <text x="407" y="582" class="small">Loads the matching graph and nature image</text>
+  </g>
+
+  <g>
+    <rect x="740" y="430" width="320" height="175" rx="14" class="node"/>
+    <path d="M754 430 H1046 Q1060 430 1060 444 V472 H740 V444 Q740 430 754 430" fill="#547f74"/>
+    <text x="762" y="458" class="card-title" fill="#ffffff">Questions &amp; regions</text>
+    <text x="762" y="500" class="module">modules/question_module.py</text>
+    <text x="762" y="531" class="copy">FAQs, question pages and council</text>
+    <text x="762" y="554" class="copy">to Noongar region lookup</text>
+    <text x="762" y="583" class="small">Loads regional maps from Data/Regions/</text>
+  </g>
+
+  <g>
+    <rect x="1095" y="430" width="320" height="175" rx="14" class="node"/>
+    <path d="M1109 430 H1401 Q1415 430 1415 444 V472 H1095 V444 Q1095 430 1109 430" fill="#547f74"/>
+    <text x="1117" y="458" class="card-title" fill="#ffffff">Climate report</text>
+    <text x="1117" y="500" class="module">modules/climate_page.py</text>
+    <text x="1117" y="531" class="copy">Shows annual and monthly results</text>
+    <text x="1117" y="554" class="copy">and links months to season pages</text>
+    <text x="1117" y="582" class="small">Uses climate calculations and season names</text>
+  </g>
+
+  <g>
+    <rect x="1450" y="430" width="320" height="175" rx="14" class="node"/>
+    <path d="M1464 430 H1756 Q1770 430 1770 444 V472 H1450 V444 Q1450 430 1464 430" fill="#547f74"/>
+    <text x="1472" y="458" class="card-title" fill="#ffffff">Sources</text>
+    <text x="1472" y="500" class="module">modules/source_module.py</text>
+    <text x="1472" y="531" class="copy">Shows the app's reference list</text>
+    <text x="1472" y="554" class="copy">with source titles and descriptions</text>
+    <text x="1472" y="582" class="small">Reference list is shown in the app</text>
+  </g>
+
+  <text x="220" y="651" class="eyebrow">SHARED LOGIC &amp; LOCAL FILES</text>
+
+
+  <!-- Supporting modules and local resources. -->
+  <g>
+    <rect x="30" y="680" width="320" height="165" rx="14" fill="#edf3ef" stroke="#bfd0c5" stroke-width="1.5"/>
+    <text x="52" y="713" class="card-title">Local credentials</text>
+    <text x="52" y="750" class="module">User's home folder</text>
+    <text x="52" y="781" class="copy">Security module reads and saves</text>
+    <text x="52" y="804" class="copy">the salted credential record (JSON)</text>
+  </g>
+
+  <g>
+    <rect x="385" y="680" width="320" height="165" rx="14" fill="#edf3ef" stroke="#bfd0c5" stroke-width="1.5"/>
+    <text x="407" y="713" class="card-title">Season page images</text>
+    <text x="407" y="750" class="module">Data/Graphs/*.png</text>
+    <text x="407" y="781" class="copy">Season climate charts</text>
+    <text x="407" y="814" class="module">Data/Season Visuals/*.png</text>
+    <text x="407" y="835" class="small">Season nature photographs and artwork</text>
+  </g>
+
+  <g>
+    <rect x="740" y="680" width="320" height="165" rx="14" fill="#f5f0e2" stroke="#d7c99e" stroke-width="1.5"/>
+    <text x="762" y="713" class="card-title">Shared season calendar</text>
+    <text x="762" y="750" class="module">modules/season_calendar.py</text>
+    <text x="762" y="781" class="copy">Maps each month to a Noongar season</text>
+    <text x="762" y="814" class="module">Used by questions and climate</text>
+    <text x="762" y="835" class="small">Question pages also load Data/Regions/ maps</text>
+  </g>
+
+  <g>
+    <rect x="1095" y="680" width="320" height="180" rx="14" fill="#edf3ef" stroke="#bfd0c5" stroke-width="1.5"/>
+    <text x="1117" y="713" class="card-title">Climate calculations</text>
+    <text x="1117" y="750" class="module">modules/climate_data.py</text>
+    <text x="1117" y="781" class="copy">Checks dates and values, keeps</text>
+    <text x="1117" y="804" class="copy">missing readings, then calculates</text>
+    <text x="1117" y="827" class="copy">monthly and yearly summaries</text>
+    <text x="1117" y="849" class="small">Uses the shared season calendar</text>
+  </g>
+
+  <g>
+    <rect x="1450" y="680" width="320" height="165" rx="14" fill="#edf3ef" stroke="#bfd0c5" stroke-width="1.5"/>
+    <text x="1472" y="713" class="card-title">Sources shown in the app</text>
+    <text x="1472" y="750" class="module">modules/source_module.py</text>
+    <text x="1472" y="781" class="copy">Lists cultural, seasonal and</text>
+    <text x="1472" y="804" class="copy">Bureau of Meteorology references</text>
+  </g>
+
+  <g>
+    <rect x="1095" y="900" width="320" height="105" rx="14" fill="#fbf5e6" stroke="#d7c99e" stroke-width="1.5"/>
+    <text x="1117" y="933" class="card-title">Included climate data</text>
+    <text x="1117" y="965" class="copy">Bureau Perth Metro · station 009225</text>
+    <text x="1117" y="988" class="copy">Data/1.csv rain · Data/2.csv max temp</text>
+  </g>
+
+  <!-- User-visible results, summarised for a quick reading of the map. -->
+  <g>
+    <rect x="1450" y="900" width="320" height="105" rx="14" fill="#edf3ef" stroke="#bfd0c5" stroke-width="1.5"/>
+    <text x="1472" y="933" class="card-title">Data paths at a glance</text>
+    <text x="1472" y="965" class="copy">Daily CSVs → checked records →</text>
+    <text x="1472" y="988" class="copy">climate summaries · images → seasons</text>
+  </g>
+
+  <!-- Arrows are drawn over node edges so both ends remain visible. -->
+  <path d="M900 164 V215" class="wire" marker-end="url(#arrow)"/>
+  <path d="M900 350 V386" class="wire" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M190 386 H1610" class="wire"/>
+  <path d="M190 386 V430 M545 386 V430 M900 386 V430 M1255 386 V430 M1610 386 V430" class="wire" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M190 605 V680 M900 605 V680 M1255 605 V680" class="wire" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M545 680 V605" class="data-wire" marker-end="url(#arrow-gold)"/>
+  <path d="M1610 605 V680" class="wire" marker-end="url(#arrow)"/>
+  <path d="M1060 763 H1095" class="wire" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M1255 900 V860" class="data-wire" marker-end="url(#arrow-gold)"/>
+
+  <!-- Legend. -->
+  <rect x="65" y="900" width="285" height="105" rx="14" fill="#fffdf9" stroke="#d9d0c1" stroke-width="1.5"/>
+  <text x="87" y="933" class="card-title">Arrow key</text>
+  <path d="M90 964 H170" class="wire" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="188" y="970" class="small">screen request + response</text>
+  <path d="M90 990 H170" class="data-wire" marker-end="url(#arrow-gold)"/>
+  <text x="188" y="996" class="small">local file is read</text>
+
+  <text x="65" y="1070" class="small">The app is a local desktop program; its screens use the code, data and images included with the project.</text>
+</svg>
