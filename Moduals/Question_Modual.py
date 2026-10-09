@@ -246,10 +246,13 @@ REGION_QUESTIONS = [
 from Moduals.UI_Modual import rounded_panel
 
 
-def display_question_answer(answer_frame, question, back_to_questions):
+def display_question_answer(answer_frame, question):
     import tkinter as tk
+<<<<<<< HEAD
     from tkinter import ttk
     from Moduals.UI_Modual import enable_mousewheel_scrolling
+=======
+>>>>>>> 990fef3903d3de196ccc5e03031928000075a371
 
     tk.Label(
         answer_frame,
@@ -300,6 +303,7 @@ def display_question_answer(answer_frame, question, back_to_questions):
             justify="left",
             padx=25,
             pady=25,
+<<<<<<< HEAD
         ).pack(fill="x", padx=4, pady=4)
     ttk.Button(
         answer_frame,
@@ -308,6 +312,9 @@ def display_question_answer(answer_frame, question, back_to_questions):
     ).pack(pady=(0, 8))
 
 
+=======
+        ).pack(fill="x", padx=45, pady=(0, 20))
+>>>>>>> 990fef3903d3de196ccc5e03031928000075a371
 def display_question_results(results_frame, questions, open_question):
     import tkinter as tk
     import textwrap
