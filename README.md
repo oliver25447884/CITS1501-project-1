@@ -3,7 +3,8 @@
 A Tkinter learning app about the six Noongar seasons, Perth weather, and seasonal nature. Month ranges are approximate and describe one regional guide, not all Noongar Country.
 
 ## Install and run
-
+Main.py can be run from Powershell,Terminal or Visual Studio Code
+or
 From this folder, create a virtual environment and install dependencies:
 
 ```bash
@@ -14,7 +15,7 @@ python main.py
 ```
 
 In VS Code, select `.venv/bin/python` as the interpreter. Keep `Data/` and `modules/` beside `main.py`.
-Main.py can be run from Powershell,Terminal or Visual Studio Code
+
 ## Project layout
 
 - `main.py` starts the app and routes between features. `modules/` contains the
