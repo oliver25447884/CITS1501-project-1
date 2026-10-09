@@ -1,4 +1,4 @@
-"""Load and summarize daily Perth weather observations from Bureau CSV files."""
+"""Load and summarise daily Perth weather observations from Bureau CSV files."""
 
 import csv
 import math

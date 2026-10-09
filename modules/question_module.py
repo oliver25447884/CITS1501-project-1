@@ -10,16 +10,16 @@ from tkinter import ttk
 NOONGAR_REGIONS = {
     "Whadjuk": {
         "Armadale", "Bassendean", "Bayswater", "Belmont", "Cambridge",
-        "Canning", "Cockburn", "Claremont", "Cottesloe", "Cottelsoe",
+        "Canning", "Cockburn", "Claremont", "Cottesloe",
         "East Fremantle", "Fremantle", "Gosnells", "Joondalup", "Kalamunda",
         "Kwinana", "Melville", "Mosman Park", "Mundaring", "Nedlands",
-        "Perth", "Rockingham", "Serpentine-Jarrandale", "Serpentine-Jarrahdale",
+        "Perth", "Rockingham", "Serpentine-Jarrahdale",
         "South Perth", "Stirling", "Subiaco", "Swan", "Victoria Park", "Vincent",
         "Wanneroo",
     },
     "Yued": {"Dandaragan", "Gingin", "Moora", "Victoria Plains"},
     "Ballardong": {
-        "Beverly", "Beverley", "Brookton", "Bruce Rcok", "Bruce Rock",
+        "Beverley", "Brookton", "Bruce Rock",
         "Cunderdin", "Dowerin", "Goomalling", "Kellerberrin", "Kondinin",
         "Koorda", "Kulin", "Merredin", "Mount Marshall", "Nungarin", "Pingelly",
         "Quairading", "Tammin", "Toodyay", "Trayning", "Westonia", "Wickepin",
@@ -28,13 +28,13 @@ NOONGAR_REGIONS = {
     },
     "Gnaala Karla Booja": {
         "Mandurah", "Bunbury", "Capel", "Collie", "Donnybrook-Balingup",
-        "Dardanup", "Harvy", "Harvey",
+        "Dardanup", "Harvey",
     },
     "South West Boojarah": {
         "Busselton", "Augusta-Margaret River", "Nannup", "Manjimup", "Boyup Brook",
     },
     "Wagyl Kaip & Southern Noongar": {
-        "Albany", "Denmark", "Plantagenet", "Cranbook", "Cranbrook", "Gnowangerup",
+        "Albany", "Denmark", "Plantagenet", "Cranbrook", "Gnowangerup",
         "Jerramungup", "Katanning", "Kojonup", "Kent", "Broomehill-Tambellup",
         "Woodanilling", "Ravensthorpe", "Wagin", "Walpole-Nornalup", "Wandering",
         "West Arthur",
@@ -129,9 +129,8 @@ REGION_QUESTIONS = [
     },
     {
         "question": (
-            "How can flowering plants help indicate a change in Noongar "
-            "seasons? Give examples of plants and the seasons in which they "
-            "flower?"
+            "How can flowering plants indicate seasonal change? Which plants "
+            "flower in each season?"
         ),
         "scrollable": True,
         "answer": (

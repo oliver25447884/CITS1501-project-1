@@ -6,7 +6,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from Moduals.ClimateData import (
+from modules.climate_data import (
     MONTHS,
     annual_summary,
     load_climate_observations,

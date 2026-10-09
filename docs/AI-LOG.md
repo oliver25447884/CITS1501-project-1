@@ -7,7 +7,7 @@ Purpose: Record AI assistance, how suggestions were evaluated, and which changes
 
 **Date:** During project development  
 **AI tool:** OpenAI Codex in VS Code / Codex desktop  
-**Task:** Fix a `SyntaxError` in `Moduals/Question_Modual.py` caused by unresolved Git merge-conflict markers so `main.py` could launch.  
+**Task:** Fix a `SyntaxError` in `modules/question_module.py` caused by unresolved Git merge-conflict markers so `main.py` could launch.  
 **AI contribution:** Helped remove the invalid conflict-marker text and repair the affected module.  
 **Evaluation and use:** The user ran `main.py` and reported that the app opened. The repaired module was retained.
 
@@ -27,13 +27,13 @@ Purpose: Record AI assistance, how suggestions were evaluated, and which changes
 **AI contribution:** Helped add the requested content and image to the app pages.  
 **Evaluation and use:** The user reviewed the result and continued giving design feedback.
 
-## Interaction 4 — Read and summarize weather CSV data
+## Interaction 4 — Read and summarise weather CSV data
 
 **Date:** During project development  
 **AI tool:** OpenAI Codex in VS Code / Codex desktop  
 **Task:** Improve the app using the supplied weather files and assignment brief.  
-**AI contribution:** Added `Moduals/ClimateData.py` to read daily rainfall and maximum-temperature CSV files, validate readings, join observations by date, and calculate monthly and annual summaries. Added a climate-data page in `main.py`.  
-**Evaluation and use:** The CSV calculations were checked with 11 automated tests in the `automated tests` folder. The user can run them with `python3 -m unittest discover -s "automated tests" -v` from the project folder.
+**AI contribution:** Added `modules/climate_data.py` to read daily rainfall and maximum-temperature CSV files, validate readings, join observations by date, and calculate monthly and annual summaries. Added a climate-data page in `main.py`.  
+**Evaluation and use:** The CSV calculations were checked with 11 automated tests in the `tests` folder. The user can run them with `python3 -m unittest discover -s tests -v` from the project folder.
 
 ## Interaction 5 — GitHub Copilot graph request in VS Code
 

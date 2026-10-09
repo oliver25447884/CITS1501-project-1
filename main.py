@@ -7,15 +7,15 @@ from pathlib import Path
 from fractions import Fraction
 from tkinter import ttk
 import webbrowser
-from Moduals.Question_Modual import (
+from modules.question_module import (
     NOONGAR_REGIONS,
     REGION_QUESTIONS,
     display_question_answer,
     display_question_results,
 )
-from Moduals.ClimateData import annual_summary, load_climate_observations, monthly_summaries
-from Moduals.Security_Modual import SecurityModule
-from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
+from modules.climate_data import annual_summary, load_climate_observations, monthly_summaries
+from modules.security_module import SecurityModule
+from modules.season_wheel import SEASONS, SeasonWheel, season_for_month
 
 # Maps Noongar region names to the image files displayed by the council lookup.
 REGION_IMAGE_FILES = {
@@ -511,7 +511,7 @@ class NoongarSeasonApp:
             self.current_frame,
             text=(
                 "Daily Bureau of Meteorology observations are loaded from the "
-                "project CSV files and summarized by month."
+                "project CSV files and summarised by month."
             ),
             font=("Segoe UI", 10),
             fg="#4a4a4a",
@@ -1145,7 +1145,7 @@ class NoongarSeasonApp:
 
         more_button = ttk.Button(
             self.current_frame,
-            text="Tell Me More!!",
+            text="Tell me more",
             state="disabled",
         )
 

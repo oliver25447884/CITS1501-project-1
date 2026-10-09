@@ -164,7 +164,7 @@ class SeasonWheel:
         preview_title.pack(anchor="w", pady=(0, 12))
         preview_description = tk.Label(
             preview_panel,
-            text="interact with the wheel to unlock knowledge",
+            text="Interact with the wheel to unlock knowledge",
             font=("Segoe UI", 11),
             fg="#4e5c46",
             bg="#f7f3ee",
@@ -335,7 +335,7 @@ class SeasonWheel:
             if season_name is None:
                 preview_title.configure(text="Season insight")
                 preview_description.configure(
-                    text="interact with the wheel to unlock knowledge"
+                    text="Interact with the wheel to unlock knowledge"
                 )
             else:
                 preview_title.configure(text=season_name)
