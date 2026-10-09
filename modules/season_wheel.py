@@ -1,3 +1,5 @@
+"""Seasonal content, wheel navigation, and detail-page visuals for the app."""
+
 import math
 import tkinter as tk
 import webbrowser
@@ -6,6 +8,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 
 
+# Display content is grouped by season; keys also select matching image assets.
+# Seasonal text and styling used by the wheel and its detail pages.
 SEASONS = {
     "Birak": {
         "months": "December to January",
@@ -68,20 +72,7 @@ SEASON_CLIMATE_SUMMARIES = {
     "Kambarang": ("25.4 °C", "58.0 mm", "Oct – Nov 2024"),
 }
 
-SEASON_BY_MONTH = {
-    12: "Birak", 1: "Birak",
-    2: "Bunuru", 3: "Bunuru",
-    4: "Djeran", 5: "Djeran",
-    6: "Makuru", 7: "Makuru",
-    8: "Djilba", 9: "Djilba",
-    10: "Kambarang", 11: "Kambarang",
-}
-
-
-def season_for_month(month):
-    return SEASON_BY_MONTH[month]
-
-
+# Captions accompany the nature images loaded on season detail pages.
 SEASON_IMAGE_CAPTIONS = {
     "Birak": "Kookaburra",
     "Bunuru": "White blossom and visiting insect",
@@ -93,7 +84,7 @@ SEASON_IMAGE_CAPTIONS = {
 
 
 def fit_window_to_screen(root, preferred_width, preferred_height):
-    """Choose a roomy window size that still fits the user's display."""
+    """Clamp requested geometry to screen bounds and return actual dimensions."""
     width = max(700, min(preferred_width, root.winfo_screenwidth() - 60))
     height = max(600, min(preferred_height, root.winfo_screenheight() - 80))
     root.minsize(min(700, width), min(600, height))
@@ -102,10 +93,14 @@ def fit_window_to_screen(root, preferred_width, preferred_height):
 
 
 class SeasonWheel:
+    """Draw the season wheel and render detailed seasonal information."""
+
     def __init__(self, app):
+        """Keep the shared app shell for page navigation and window access."""
         self.app = app
 
     def show_information_page(self):
+        """Build the interactive wheel that links to each season detail page."""
         app = self.app
         app.clear_page()
         app.root.title("Wheel of Noongar Seasons")
@@ -229,6 +224,7 @@ class SeasonWheel:
                 bg="#f7f3ee",
             ).pack(anchor="center", pady=(12, 0))
 
+        # Each 60-degree arc maps one entry in SEASONS to one clickable segment.
         center_x, center_y = 250, 225
         outer_radius = 190
         inner_radius = 82
@@ -245,6 +241,7 @@ class SeasonWheel:
         )
 
         for index, season_name in enumerate(season_names):
+            # Capture each segment's name in the callbacks to avoid late binding.
             start_angle = 90 - index * 60
             arc_tag = f"season_{index}"
             canvas.create_arc(
@@ -288,7 +285,7 @@ class SeasonWheel:
             canvas.tag_bind(
                 arc_tag,
                 "<Button-1>",
-                lambda event, name=season_name: self.show_season_page(name),
+                lambda event, name=season_name: app.show_season_page(name),
             )
 
         canvas.create_oval(
@@ -318,6 +315,7 @@ class SeasonWheel:
         hovered_season = {"name": None}
 
         def update_season_preview(event):
+            """Convert pointer coordinates into an arc index for the preview."""
             distance = math.hypot(event.x - center_x, event.y - center_y)
             if inner_radius <= distance <= outer_radius:
                 angle = math.degrees(
@@ -358,6 +356,7 @@ class SeasonWheel:
         close_button.pack(pady=(0, 15))
 
     def show_season_page(self, season_name):
+        """Show seasonal notes, weather summaries, graph, and nature image."""
         app = self.app
         app.clear_page()
         app.root.title(f"{season_name} | Noongar Seasons")
@@ -366,7 +365,7 @@ class SeasonWheel:
         page_bg = season["background"]
         accent = season["accent"]
         app.current_frame.configure(bg=page_bg)
-        data_dir = Path(__file__).resolve().parent.parent / "Data" / "Season Visuals"
+        data_dir = Path(__file__).resolve().parent.parent / "Data"
         self.detail_images = []
 
         header = tk.Frame(app.current_frame, bg=accent, padx=18, pady=12)
@@ -394,6 +393,7 @@ class SeasonWheel:
 
         content = tk.Frame(page, bg=page_bg)
         content_window = page.create_window((0, 0), window=content, anchor="nw")
+        # The content frame determines the canvas scroll extent as it grows.
         content.bind(
             "<Configure>",
             lambda _event: page.configure(scrollregion=page.bbox("all")),
@@ -401,6 +401,7 @@ class SeasonWheel:
         wrapping_labels = []
 
         def resize_content(event):
+            """Match content width to the viewport and reflow wrapped labels."""
             page.itemconfigure(content_window, width=event.width)
             for label in wrapping_labels:
                 label.configure(wraplength=min(700, max(280, event.width - 135)))
@@ -410,6 +411,7 @@ class SeasonWheel:
             "<MouseWheel>",
             lambda event: page.yview_scroll(-1 if event.delta > 0 else 1, "units"),
         )
+        # Remove the global wheel binding when this page is destroyed.
         detail_frame = app.current_frame
         detail_frame.bind(
             "<Destroy>",
@@ -449,6 +451,7 @@ class SeasonWheel:
         ).pack(padx=24, pady=(0, 12))
 
         def make_card(title, body, *, italic=False):
+            """Create a reusable text card and track its responsive label."""
             card = tk.Frame(
                 content,
                 bg="#fffdf9",
@@ -498,40 +501,6 @@ class SeasonWheel:
             ),
         )
 
-        art_block = tk.Frame(content, bg=page_bg)
-        art_block.pack(pady=(5, 12))
-        art_path = data_dir / f"{season_name.lower()}_nature.png"
-        try:
-            art = tk.PhotoImage(file=str(art_path))
-            self.detail_images.append(art)
-            tk.Label(art_block, image=art, bg=page_bg).pack()
-            tk.Label(
-                art_block,
-                text=SEASON_IMAGE_CAPTIONS[season_name],
-                font=("Segoe UI", 9, "italic"),
-                fg=accent,
-                bg=page_bg,
-            ).pack(pady=(4, 2))
-            image_note = tk.Label(
-                art_block,
-                text=season["image_context"],
-                font=("Segoe UI", 10),
-                fg="#4e5c46",
-                bg=page_bg,
-                wraplength=640,
-                justify="center",
-            )
-            image_note.pack(pady=(0, 4))
-            wrapping_labels.append(image_note)
-        except (tk.TclError, OSError):
-            tk.Label(
-                art_block,
-                text="Seasonal plant and animal image unavailable.",
-                font=("Segoe UI", 10, "italic"),
-                fg="#54624f",
-                bg=page_bg,
-            ).pack(padx=24, pady=18)
-
         make_card("Perth weather and wind", season["weather"])
 
         stats_row = tk.Frame(content, bg=page_bg)
@@ -571,13 +540,19 @@ class SeasonWheel:
                 bg="#fffdf9",
             ).pack()
 
+        detail_row = tk.Frame(content, bg=page_bg)
+        # Graph and nature content share equal columns at the bottom of the page.
+        detail_row.pack(fill="x", padx=28, pady=8)
+        detail_row.columnconfigure(0, weight=1, uniform="season_detail")
+        detail_row.columnconfigure(1, weight=1, uniform="season_detail")
+
         graph_card = tk.Frame(
-            content,
+            detail_row,
             bg="#fffdf9",
             highlightbackground="#e1d8ca",
             highlightthickness=1,
         )
-        graph_card.pack(fill="x", padx=28, pady=8)
+        graph_card.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
         tk.Label(
             graph_card,
             text="DAILY TEMPERATURE & RAINFALL",
@@ -585,10 +560,12 @@ class SeasonWheel:
             fg=accent,
             bg="#fffdf9",
         ).pack(anchor="w", padx=18, pady=(14, 8))
-        graph_path = data_dir / f"{season_name.lower()}_climate.png"
+        graph_path = data_dir / "Graphs" / f"{season_name}.png"
         try:
-            source_graph = Image.open(graph_path).convert("RGB")
-            display_width = max(560, min(1280, window_width - 100))
+            with Image.open(graph_path) as source:
+                source_graph = source.convert("RGB")
+            # Scale the chart to the left column; the viewer keeps full resolution.
+            display_width = max(1, min(760, (window_width - 120) // 2))
             display_height = round(
                 source_graph.height * display_width / source_graph.width
             )
@@ -596,9 +573,10 @@ class SeasonWheel:
                 (display_width, display_height), Image.Resampling.LANCZOS
             )
             graph = ImageTk.PhotoImage(graph_preview, master=app.root)
+            # Keep a Python reference so Tk does not collect the displayed image.
             self.detail_images.append(graph)
             tk.Label(graph_card, image=graph, bg="#fffdf9").pack(
-                padx=10, pady=(0, 5)
+                padx=8, pady=(0, 5)
             )
             tk.Label(
                 graph_card,
@@ -606,25 +584,65 @@ class SeasonWheel:
                 font=("Segoe UI", 9),
                 fg="#65715e",
                 bg="#fffdf9",
-            ).pack(pady=(0, 8))
+                wraplength=display_width,
+                justify="left",
+            ).pack(padx=8, pady=(0, 8))
             ttk.Button(
                 graph_card,
                 text="View high-resolution graph",
                 command=lambda path=graph_path: self.open_graph_viewer(
                     path, season_name
                 ),
-            ).pack(pady=(0, 14))
+            ).pack(padx=8, pady=(0, 14))
         except (tk.TclError, OSError):
             tk.Label(
                 graph_card,
-                text="The season line graph could not be loaded.",
+                text="The seasonal graph could not be loaded.",
                 font=("Segoe UI", 10, "italic"),
                 fg="#54624f",
                 bg="#f7f3ee",
             ).pack(padx=20, pady=20)
 
+        art_block = tk.Frame(
+            detail_row,
+            bg="#fffdf9",
+            highlightbackground="#e1d8ca",
+            highlightthickness=1,
+        )
+        art_block.grid(row=0, column=1, sticky="nsew", padx=(6, 0))
+        art_path = data_dir / "Season Visuals" / f"{season_name.lower()}_nature.png"
+        try:
+            art = tk.PhotoImage(file=str(art_path))
+            self.detail_images.append(art)
+            tk.Label(art_block, image=art, bg="#fffdf9").pack(pady=(14, 0))
+            tk.Label(
+                art_block,
+                text=SEASON_IMAGE_CAPTIONS[season_name],
+                font=("Segoe UI", 9, "italic"),
+                fg=accent,
+                bg="#fffdf9",
+            ).pack(pady=(4, 2))
+            image_note = tk.Label(
+                art_block,
+                text=season["image_context"],
+                font=("Segoe UI", 10),
+                fg="#4e5c46",
+                bg="#fffdf9",
+                wraplength=max(240, (window_width - 120) // 2 - 40),
+                justify="left",
+            )
+            image_note.pack(fill="x", padx=16, pady=(0, 14))
+        except (tk.TclError, OSError):
+            tk.Label(
+                art_block,
+                text="Seasonal plant and animal image unavailable.",
+                font=("Segoe UI", 10, "italic"),
+                fg="#54624f",
+                bg="#fffdf9",
+            ).pack(padx=24, pady=18)
+
     def open_graph_viewer(self, graph_path, season_name):
-        """Open a zoomable view of the full-resolution source graph."""
+        """Show the source graph at full resolution with bounded zoom controls."""
         app = self.app
         viewer = tk.Toplevel(app.root)
         viewer.title(f"{season_name} climate graph")
@@ -663,6 +681,7 @@ class SeasonWheel:
 
         def render_graph(zoom):
             """Resize the graph for the selected zoom and update the scroll area."""
+            # Bound zoom and size the scroll region to match the rendered image.
             zoom = max(0.2, min(1.0, zoom))
             zoom_state["value"] = zoom
             size = (

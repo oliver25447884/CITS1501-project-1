@@ -1,14 +1,17 @@
+"""Local credential storage and password setup, login, and recovery screens."""
+
 import hashlib
 import hmac
 import json
+import secrets
 import subprocess
 import sys
-import secrets
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
 
 
+# Credential policy is shared by registration and password recovery.
 SECURITY_QUESTIONS = (
     "Who is my favourite professor?",
     "What is my favourite book?",
@@ -19,7 +22,9 @@ ANSWER_MAX_LENGTH = 20
 HASH_ITERATIONS = 200_000
 
 
+# Passwords and answers use the same salted PBKDF2 record format.
 def _create_secret_record(secret):
+    """Hash a secret with a fresh salt before storing it."""
     salt = secrets.token_bytes(16)
     digest = hashlib.pbkdf2_hmac(
         "sha256",
@@ -31,6 +36,7 @@ def _create_secret_record(secret):
 
 
 def _verify_secret(secret, record):
+    """Compare a supplied secret to its stored salted hash."""
     try:
         salt = bytes.fromhex(record["salt"])
         expected_hash = record["hash"]
@@ -46,7 +52,10 @@ def _verify_secret(secret, record):
 
 
 class SecurityModule:
+    """Own credential persistence and the app's startup authentication flow."""
+
     def __init__(self, app, credentials_path=None):
+        """Load validated credentials and retain the shared app shell."""
         self.app = app
         self.credentials_path = Path(
             credentials_path
@@ -58,6 +67,7 @@ class SecurityModule:
         self.password_entry = None
 
     def _load_credentials(self):
+        """Read credentials only when their stored structure is valid."""
         try:
             credentials = json.loads(self.credentials_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -78,32 +88,39 @@ class SecurityModule:
             for record in [password_record, *answer_records]
         ):
             return None
+        # Reject partial records before login or recovery can consume them.
         return credentials
 
     def _save_credentials(self, credentials):
+        """Persist the current credential records as JSON."""
         self.credentials_path.write_text(
             json.dumps(credentials),
             encoding="utf-8",
         )
 
     def show_startup_page(self):
+        """Choose password setup or login based on saved credentials."""
         if self.credentials is None:
             self.show_create_password_page()
         else:
             self.show_login_page()
 
     def _prepare_root(self, title, geometry, minimum_size):
+        """Apply shared window settings to security screens."""
         self.app.root.title(title)
         self.app.set_windowed_size(geometry, minimum_size)
         self.app.root.configure(bg="#f4efe7")
 
     def _password_within_limit(self, proposed_value):
+        """Allow password entry only up to the configured length."""
         return len(proposed_value) <= PASSWORD_MAX_LENGTH
 
     def _answer_within_limit(self, proposed_value):
+        """Allow recovery answers only up to their configured length."""
         return len(proposed_value) <= ANSWER_MAX_LENGTH
 
     def _create_password_entry(self, parent):
+        """Create a masked password field with length validation."""
         return tk.Entry(
             parent,
             font=("Segoe UI", 11),
@@ -117,6 +134,7 @@ class SecurityModule:
         )
 
     def _create_answer_entries(self, parent):
+        """Create one validated entry for each recovery question."""
         entries = []
         validate_command = (
             self.app.root.register(self._answer_within_limit),
@@ -144,9 +162,11 @@ class SecurityModule:
         return entries
 
     def _set_status(self, status_label, message):
+        """Update the status message shown by the active security form."""
         status_label.config(text=message)
 
     def show_create_password_page(self):
+        """Build the first-run form for a password and recovery answers."""
         self.app.clear_page()
         self._prepare_root("Create password", "600x700", (520, 600))
 
@@ -199,6 +219,7 @@ class SecurityModule:
         password_entry.focus_set()
 
     def _create_credentials(self, password_entry, answer_entries, status_label):
+        """Validate and save new salted credentials before opening login."""
         password = password_entry.get()
         answers = [entry.get().strip() for entry in answer_entries]
         if not password:
@@ -222,6 +243,7 @@ class SecurityModule:
         self.show_login_page()
 
     def show_login_page(self):
+        """Build the login form for an existing local credential record."""
         self.app.clear_page()
         self._prepare_root("Login", "500x390", (420, 330))
 
@@ -266,6 +288,7 @@ class SecurityModule:
         self.password_entry.focus_set()
 
     def check_password(self):
+        """Verify the login attempt and route success to the home page."""
         entered_password = self.password_entry.get()
 
         if _verify_secret(entered_password, self.credentials["password"]):
@@ -278,6 +301,7 @@ class SecurityModule:
             self.password_entry.focus_set()
 
     def _play_login_sound(self, succeeded):
+        """Play a platform-appropriate sign-in sound, falling back to a bell."""
         try:
             if sys.platform == "darwin":
                 sound_name = "Glass.aiff" if succeeded else "Basso.aiff"
@@ -297,6 +321,7 @@ class SecurityModule:
             self.app.root.bell()
 
     def show_forgot_password_window(self):
+        """Open the recovery dialog, or setup if no credentials exist."""
         if self.credentials is None:
             self.show_create_password_page()
             return
@@ -337,6 +362,7 @@ class SecurityModule:
         answer_entries[0].focus_set()
 
     def _verify_recovery_answers(self, answer_entries, window, status_label):
+        """Verify all recovery answers before allowing a password reset."""
         answers = [entry.get().strip() for entry in answer_entries]
         if not all(answers):
             self._set_status(status_label, "Answer all three security questions.")
@@ -353,6 +379,7 @@ class SecurityModule:
         self._show_new_password_form(window)
 
     def _show_new_password_form(self, window):
+        """Replace the recovery dialog with the new-password form."""
         for child in window.winfo_children():
             child.destroy()
         window.title("Create new password")
@@ -393,6 +420,7 @@ class SecurityModule:
         ).pack()
 
     def _save_new_password(self, password_entry, confirm_entry, window, status_label):
+        """Validate, persist, and activate the replacement password."""
         password = password_entry.get()
         if not password:
             self._set_status(status_label, "Enter a new password.")

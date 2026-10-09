@@ -17,7 +17,9 @@ In VS Code, select `.venv/bin/python` as the interpreter. Keep `Data/` and `modu
 
 ## Project layout
 
-- `main.py` starts the app; `modules/` contains its screen and data modules.
+- `main.py` starts the app and routes between features. `modules/` contains the
+  season, question, climate, source, and security screens, plus climate-data
+  parsing and calculations.
 - `Data/` contains the climate CSVs and images used by the app.
 - `tests/` contains the automated climate-data tests.
 - `docs/` contains the written report, project notes, and source references.
@@ -41,7 +43,7 @@ The 11 tests cover CSV loading, date and value validation, missing readings, and
 
 ## Data and project files
 
-`Data/1.csv` contains 2024 Perth Metro daily rainfall; `Data/2.csv` contains daily maximum temperatures (BOM station 009225). The climate page calculates summaries from these files. Season-page graphs are supplied PNG assets in `Data/Season Visuals/`.
+`Data/1.csv` contains 2024 Perth Metro daily rainfall; `Data/2.csv` contains daily maximum temperatures (BOM station 009225). The climate page calculates summaries from these files. Season-page graphs are supplied in `Data/Graphs/`, and nature images are in `Data/Season Visuals/`.
 
 Sources: [Bureau of Meteorology Climate Data Online](https://www.bom.gov.au/climate/data/) · [DPIRD Noongar Six Seasons fact sheet](https://marinewaters.fish.wa.gov.au/resource/fact-sheet-the-noongar-six-seasons/).
 

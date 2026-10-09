@@ -6,7 +6,7 @@ This is a local Python/Tkinter desktop app. It is not a hosted website or a pack
 
 ## Environment recorded
 
-- Operating system: macOS
+- Operating system: macOS or Windows
 - Python: 3.14.7, from the project's `.venv`
 - App entry point: `main.py`
 - Automated tests: `tests/test_climate_data.py`

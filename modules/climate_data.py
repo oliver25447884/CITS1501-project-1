@@ -1,4 +1,4 @@
-"""Load and summarise daily Perth weather observations from Bureau CSV files."""
+"""Validate BOM CSV observations and calculate values for climate_page.py."""
 
 import csv
 import math
@@ -9,31 +9,30 @@ from datetime import date
 from pathlib import Path
 from statistics import fmean
 
+from modules.season_calendar import season_for_month
 
+
+# CSV parsing expects month abbreviations; output uses full calendar names.
 MONTHS = (
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December",
 )
 MONTH_NUMBER = {name[:3].casefold(): number for number, name in enumerate(MONTHS, 1)}
-MONTH_TO_SEASON = {
-    1: "Birak", 2: "Bunuru", 3: "Bunuru", 4: "Djeran", 5: "Djeran",
-    6: "Makuru", 7: "Makuru", 8: "Djilba", 9: "Djilba",
-    10: "Kambarang", 11: "Kambarang", 12: "Birak",
-}
 DAY_PATTERN = re.compile(r"^(\d{1,2})(?:st|nd|rd|th)?$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
 class ClimateDay:
-    """One calendar day's temperature and rainfall readings."""
+    """Immutable joined observation; either measurement may be missing."""
 
     observed_on: date
     maximum_temperature: float | None
     rainfall: float | None
 
 
+# CSV input is validated here before either page uses the observations.
 def _load_measure(path, year, measure):
-    """Read one BOM month-by-column table into date-to-value observations."""
+    """Parse one BOM table, validating dates and values for a single measure."""
     with Path(path).open(newline="", encoding="utf-8-sig") as source:
         rows = list(csv.reader(source))
 
@@ -92,7 +91,7 @@ def _load_measure(path, year, measure):
 
 
 def load_climate_observations(data_directory=None, year=2024, minimum_records=200):
-    """Load and join the two BOM files into one record per observed date."""
+    """Join rainfall and temperature CSVs while retaining missing readings."""
     data_dir = (
         Path(data_directory)
         if data_directory is not None
@@ -100,6 +99,7 @@ def load_climate_observations(data_directory=None, year=2024, minimum_records=20
     )
     rainfall_by_day = _load_measure(data_dir / "1.csv", year, "rainfall")
     temperature_by_day = _load_measure(data_dir / "2.csv", year, "temperature")
+    # Union dates so a missing measurement does not discard the other value.
     dates = sorted(set(rainfall_by_day) | set(temperature_by_day))
     if len(dates) < minimum_records:
         raise ValueError(
@@ -116,8 +116,9 @@ def load_climate_observations(data_directory=None, year=2024, minimum_records=20
     )
 
 
+# These aggregations feed the monthly climate page and annual summary cards.
 def monthly_summaries(observations):
-    """Calculate monthly means, rainfall totals, and data coverage counts."""
+    """Aggregate daily records by calendar month for the climate table."""
     months = defaultdict(list)
     for observation in observations:
         months[observation.observed_on.month].append(observation)
@@ -135,7 +136,7 @@ def monthly_summaries(observations):
             {
                 "month": month_number,
                 "month_name": month_name,
-                "season": MONTH_TO_SEASON[month_number],
+                "season": season_for_month(month_number),
                 "record_days": len(days),
                 "temperature_days": len(temperatures),
                 "rainfall_days": len(rainfall),
@@ -150,7 +151,7 @@ def monthly_summaries(observations):
 
 
 def annual_summary(observations):
-    """Calculate annual averages and observation coverage from daily records."""
+    """Summarize yearly coverage and totals for the climate page metric cards."""
     temperatures = [
         item.maximum_temperature
         for item in observations
