@@ -11,33 +11,90 @@ from PIL import Image, ImageDraw, ImageOps, ImageTk
 SEASONS = {
     "Birak": {
         "months": "December to January",
-        "description": "Birak is the hottest and driest time of the year. It is a season of warmth, long daylight hours, and strong sunshine. The land is often dry and the weather can be very hot.",
-        "meaning": "This season marks the height of summer in the Noongar calendar, when people traditionally paid close attention to weather, water, and the changing landscape.",
+        "description": "Birak is a hot, dry part of the year around Perth, with long daylight hours and strong sunshine. Rainfall is usually low and inland areas can become very warm, while afternoon sea breezes may bring some relief near the coast.",
+        "meaning": "In this local guide, Birak marks the transition into summer conditions. Heat, available water, and changes in plants and animal activity are useful things to notice, while recognising that conditions vary from year to year and place to place.",
+        "flora": (
+            ("Grass trees (Xanthorrhoea spp.)", "Their tall flower spikes can provide food for insects and other animals in warmer months; flowering varies by species and year."),
+            ("Banksias (Banksia spp.)", "Some species may flower across different parts of the year, providing nectar when in bloom."),
+        ),
+        "fauna": (
+            ("Bobtail skink", "May bask in mild conditions and shelter when the ground is very hot."),
+            ("Western grey kangaroo", "Often forages in open areas during cooler parts of the day."),
+            ("Osprey", "May be seen around suitable coastal and estuary habitats."),
+        ),
     },
     "Bunuru": {
         "months": "February to March",
-        "description": "Bunuru is the second part of summer. It remains warm and can feel very intense, but the weather begins to shift as the season progresses.",
-        "meaning": "This time is associated with long hot days, with the landscape beginning to prepare for the cooler months ahead.",
+        "description": "Bunuru is commonly the hottest and driest stretch of the year around Perth. Long, sunny days and little rain can leave soils and vegetation dry; coastal breezes and shade can make a noticeable difference.",
+        "meaning": "This is a useful time to observe how plants and animals respond to heat and limited water. The timing and severity of hot, dry conditions differ between years, so these are seasonal tendencies rather than fixed rules.",
+        "flora": (
+            ("Banksias (Banksia spp.)", "Flowering and seed cycles differ between species; flowers, when present, can provide nectar."),
+            ("Native grasses and shrubs", "Many reduce visible growth or conserve water during hot, dry weather."),
+        ),
+        "fauna": (
+            ("Western grey kangaroo", "May rest in shade and feed more during cooler hours."),
+            ("Bobtail skink", "Uses shelter to avoid the hottest conditions."),
+            ("Black swan", "Can be observed on suitable wetlands and estuaries throughout the year."),
+        ),
     },
     "Djeran": {
         "months": "April to May",
-        "description": "Djeran brings the first cooler weather of the year. Days become milder and the landscape begins to change as autumn settles in.",
-        "meaning": "This season is linked with leaves falling, cooler winds, and the start of a time of transition as the land moves from warm to cool.",
+        "description": "Djeran brings a gradual move away from summer heat. Cooler mornings and evenings become more noticeable, winds change, and the first seasonal rains may begin to affect the ground and local waterways.",
+        "meaning": "Djeran is a time of transition in this local seasonal guide. Watching for cooler weather, changing water levels, and the response of plants and animals can reveal how the environment is shifting toward the wetter months.",
+        "flora": (
+            ("Jarrah (Eucalyptus marginata)", "A characteristic local woodland tree; flowering time varies with location and year."),
+            ("Banksias (Banksia spp.)", "Different species flower at different times, and their response to seasonal conditions is not uniform."),
+        ),
+        "fauna": (
+            ("Black swan", "A familiar waterbird on suitable wetlands, estuaries, and lakes."),
+            ("Quenda", "Forages among leaf litter and dense vegetation, usually at night."),
+            ("Carnaby's black-cockatoo", "Uses suitable woodland and feeding habitat across the south-west."),
+        ),
     },
     "Makuru": {
         "months": "June to July",
-        "description": "Makuru is the wettest part of the year. It brings cooler temperatures, rain, and the strongest winter conditions.",
-        "meaning": "This season is closely connected with the colder months, more rainfall, and the deeper seasonal rhythms of the environment.",
+        "description": "Makuru is generally the coldest and wettest part of the year around Perth. Cold fronts and rainfall become more frequent, replenishing soils, wetlands, and waterways, although rainfall totals vary from year to year.",
+        "meaning": "The wetter conditions shape what can be observed across the landscape. Changes in water, shelter, and food availability influence plants and wildlife, but no single sign appears everywhere or in every year.",
+        "flora": (
+            ("Wetland sedges and rushes", "Grow in suitable damp habitats, where winter rain can replenish water and soil moisture."),
+            ("Paperbarks (Melaleuca spp.)", "Can be found around suitable wetland and damp habitats; local species and flowering times vary."),
+        ),
+        "fauna": (
+            ("Motorbike frog", "A south-west wetland frog; calling and breeding activity can increase after rain."),
+            ("Black swan", "May be seen on wetlands and estuaries; observe from a respectful distance."),
+            ("Western grey kangaroo", "Uses open woodland and grassy habitats across the region."),
+        ),
     },
     "Djilba": {
         "months": "August to September",
-        "description": "Djilba is the time of early spring. The weather becomes less cold and the landscape begins to wake up again.",
-        "meaning": "This season signals renewal and the first signs of new growth, as nature starts to become active after winter.",
+        "description": "Djilba is a changeable transition from winter toward spring. Cool, wet days may alternate with warmer weather, and early signs of new growth and flowering begin to appear in parts of the south-west.",
+        "meaning": "The seasonal shift is gradual rather than a fixed date on the calendar. New flowers, warmer spells, and changes in animal activity can be noticed, with their timing depending on local conditions.",
+        "flora": (
+            ("Kangaroo paws (Anigozanthos spp.)", "Some species begin flowering around the transition into spring; timing varies by species and location."),
+            ("Banksias (Banksia spp.)", "Some species flower during the cooler-to-warmer transition, providing food when in bloom."),
+            ("Early wildflowers", "The first flowers may appear in suitable local habitats; avoid picking or trampling them."),
+        ),
+        "fauna": (
+            ("Quenda", "Forages among leaf litter and dense vegetation, usually at night."),
+            ("Motorbike frog", "May be heard near suitable wetland habitat after rain."),
+            ("Carnaby's black-cockatoo", "Moves between feeding and roosting sites across suitable habitat."),
+        ),
     },
     "Kambarang": {
         "months": "October to November",
-        "description": "Kambarang is a season of flowering and new life. The land is green, vibrant, and full of movement as spring grows stronger.",
-        "meaning": "This is a time of growth, abundance, and the return of energy across the environment as the warmer season approaches.",
+        "description": "Kambarang brings warmer spring weather and especially noticeable flowering in many parts of the south-west. As the season progresses, the landscape moves toward the hotter, drier months.",
+        "meaning": "Flowering plants and the wildlife that feed around them can be striking seasonal observations. The display differs by habitat, species, and year; stay on paths and leave flowers and wildlife undisturbed.",
+        "flora": (
+            ("Banksias (Banksia spp.)", "Many species flower at different times and provide nectar for wildlife."),
+            ("Kangaroo paws (Anigozanthos spp.)", "Their bright flowers are a familiar spring feature in parts of the south-west."),
+            ("Everlastings", "Seasonal displays can occur in suitable locations as warmer conditions arrive."),
+        ),
+        "fauna": (
+            ("Carnaby's black-cockatoo", "Feeds on seeds and native plants in suitable habitat."),
+            ("Western honey possum", "A nectar-feeder of south-west heathland; found only where suitable habitat is present."),
+            ("Splendid fairy-wren", "A small bushland bird that is best watched quietly from a distance."),
+            ("Native bees and honeyeaters", "May feed around flowering plants when nectar and pollen are available."),
+        ),
     },
 }
 
@@ -336,7 +393,7 @@ class SeasonWheel:
         app = self.app
         app.clear_page()
         app.root.title(f"{season_name} | Noongar Seasons")
-        app.root.geometry("700x500")
+        app.set_windowed_size("1050x760", (850, 620))
         current_frame = app.current_frame
 
         season = SEASONS[season_name]
@@ -429,24 +486,98 @@ class SeasonWheel:
 
         body_font = tkfont.Font(root=self.app.root, family="TkDefaultFont", size=12)
         small_font = tkfont.Font(root=self.app.root, family="TkDefaultFont", size=10)
-        title_font = tkfont.Font(root=self.app.root, family="Georgia", size=30, weight="bold")
-        margin = min(38, max(20, int(width * 0.055)))
-        text_width = max(220, width - margin * 2)
-        y = 34
+        title_font = tkfont.Font(
+            root=self.app.root, family="Georgia", size=30, weight="bold"
+        )
+        section_font = tkfont.Font(
+            root=self.app.root, family="TkDefaultFont", size=11, weight="bold"
+        )
+        margin = min(34, max(20, int(width * 0.045)))
+        column_gap = 28
+        available_width = max(1, width - margin * 2 - column_gap)
+        left_width = int(available_width * 0.43)
+        right_width = available_width - left_width
+        left_x = margin
+        right_x = left_x + left_width + column_gap
+        left_y = 30
+        right_y = 30
         text_items = []
 
-        def add_text(text, font, colour, gap):
-            nonlocal y
+        def add_text(text, font, colour, gap, x, text_width, align="left"):
+            nonlocal left_y, right_y
+            current_y = left_y if align == "left" else right_y
             wrapped = self._wrap_text(text, font, text_width)
-            text_items.append((y, wrapped, font, colour, text_width))
+            text_items.append((x, current_y, wrapped, font, colour, text_width))
             line_count = max(1, len(wrapped.splitlines()))
-            y += line_count * font.metrics("linespace") + gap
+            next_y = current_y + line_count * font.metrics("linespace") + gap
+            if align == "left":
+                left_y = next_y
+            else:
+                right_y = next_y
 
-        add_text(season["months"].upper(), small_font, "#f5d985", 4)
-        add_text(season_name, title_font, "#ffffff", 14)
-        add_text(season["description"], body_font, "#ffffff", 10)
-        add_text(season["meaning"], small_font, "#f3f2ec", 24)
-        add_text("PERTH DAILY CLIMATE  ·  TEMPERATURE AND RAINFALL", small_font, "#ffffff", 5)
+        add_text(
+            season["months"].upper(), small_font, "#f5d985", 4, left_x, left_width
+        )
+        add_text(season_name, title_font, "#ffffff", 12, left_x, left_width)
+        add_text(
+            "ABOUT THIS SEASON",
+            section_font,
+            "#f5d985",
+            5,
+            right_x,
+            right_width,
+            "right",
+        )
+        add_text(
+            season["description"],
+            body_font,
+            "#ffffff",
+            10,
+            right_x,
+            right_width,
+            "right",
+        )
+        add_text(
+            season["meaning"],
+            body_font,
+            "#f3f2ec",
+            18,
+            right_x,
+            right_width,
+            "right",
+        )
+        add_text(
+            "FLORA EXAMPLES",
+            section_font,
+            "#f5d985",
+            5,
+            right_x,
+            right_width,
+            "right",
+        )
+        flora_text = "\n".join(f"- {name}: {detail}" for name, detail in season["flora"])
+        add_text(flora_text, body_font, "#ffffff", 16, right_x, right_width, "right")
+        add_text(
+            "FAUNA EXAMPLES",
+            section_font,
+            "#f5d985",
+            5,
+            right_x,
+            right_width,
+            "right",
+        )
+        fauna_text = "\n".join(f"- {name}: {detail}" for name, detail in season["fauna"])
+        add_text(fauna_text, body_font, "#ffffff", 5, right_x, right_width, "right")
+        add_text(
+            "Examples are general observations, not fixed seasonal indicators; "
+            "species and timing vary by habitat and year.",
+            small_font,
+            "#f3f2ec",
+            0,
+            right_x,
+            right_width,
+            "right",
+        )
 
         graph_data = SEASON_GRAPH_DATA.get(season_name, {})
         graph_summary = (
@@ -455,26 +586,83 @@ class SeasonWheel:
             f"{graph_data.get('rainfall_daily', 0):.2f} mm/day  ·  Total "
             f"{graph_data.get('rainfall_total', 0):.1f} mm"
         )
-        add_text(graph_summary, small_font, "#f3f2ec", 10)
-
-        graph_path = Path(__file__).resolve().parent.parent / "Data" / "Regions" / SEASON_GRAPH_FILES[season_name]
+        graph_path = (
+            Path(__file__).resolve().parent.parent
+            / "Data"
+            / "Regions"
+            / SEASON_GRAPH_FILES[season_name]
+        )
         graph_source = self._open_image(graph_path)
-        graph_width = min(text_width, graph_source.width) if graph_source else text_width
+        graph_width = (
+            min(max(1, left_width - 24), graph_source.width)
+            if graph_source
+            else max(1, left_width - 24)
+        )
         graph_height = (
             round(graph_source.height * graph_width / graph_source.width)
             if graph_source
             else 280
         )
-        graph_y = y
-        y += graph_height + 24
+        chart_text_width = left_width - 24
+        chart_note = graph_data.get("note", "")
+        chart_note_height = (
+            max(1, len(self._wrap_text(chart_note, small_font, chart_text_width).splitlines()))
+            * small_font.metrics("linespace")
+            if chart_note
+            else 0
+        )
+        summary_height = max(
+            1,
+            len(self._wrap_text(graph_summary, small_font, chart_text_width).splitlines()),
+        ) * small_font.metrics("linespace")
+        chart_heading_height = small_font.metrics("linespace")
+        chart_text_height = (
+            chart_heading_height
+            + 5
+            + summary_height
+            + (5 + chart_note_height if chart_note else 0)
+        )
+        graph_panel_padding = 12
+        graph_panel_height = graph_height + graph_panel_padding * 2
+        chart_block_height = (
+            chart_text_height + graph_panel_height + margin + 10
+        )
+        content_height = max(
+            right_y + margin,
+            left_y + chart_block_height,
+            canvas.winfo_height(),
+        )
+        graph_panel_y = content_height - margin - graph_panel_height
+        climate_y = graph_panel_y - chart_text_height - 10
+        climate_heading = "PERTH DAILY CLIMATE - TEMPERATURE AND RAINFALL"
+        text_items.append(
+            (
+                left_x,
+                climate_y,
+                climate_heading,
+                small_font,
+                "#ffffff",
+                chart_text_width,
+            )
+        )
+        climate_y += chart_heading_height + 5
+        summary = self._wrap_text(graph_summary, small_font, chart_text_width)
+        text_items.append(
+            (left_x, climate_y, summary, small_font, "#f3f2ec", chart_text_width)
+        )
+        climate_y += summary_height + 5
+        if chart_note:
+            note = self._wrap_text(chart_note, small_font, chart_text_width)
+            text_items.append(
+                (left_x, climate_y, note, small_font, "#ffffff", chart_text_width)
+            )
 
-        if graph_data.get("note"):
-            note = self._wrap_text(graph_data["note"], small_font, text_width)
-            text_items.append((y, note, small_font, "#ffffff", text_width))
-            y += max(1, len(note.splitlines())) * small_font.metrics("linespace") + 24
-
-        content_height = max(y + 30, canvas.winfo_height())
-        photo_path = Path(__file__).resolve().parent.parent / "Data" / "Regions" / SEASON_IMAGE_FILES[season_name]
+        photo_path = (
+            Path(__file__).resolve().parent.parent
+            / "Data"
+            / "Regions"
+            / SEASON_IMAGE_FILES[season_name]
+        )
         photo_source = self._open_image(photo_path)
         if photo_source:
             backdrop = ImageOps.fit(
@@ -485,13 +673,18 @@ class SeasonWheel:
         else:
             backdrop = Image.new("RGBA", (width, content_height), "#20352d")
 
-        text_band_height = max(1, graph_y - 12)
-        band = Image.new(
+        left_panel = Image.new(
             "RGBA",
-            (width, text_band_height),
-            (17, 40, 31, 172),
+            (left_width + 12, content_height),
+            (17, 40, 31, 188),
         )
-        backdrop.alpha_composite(band, (0, 0))
+        right_panel = Image.new(
+            "RGBA",
+            (right_width + 12, content_height),
+            (17, 40, 31, 188),
+        )
+        backdrop.alpha_composite(left_panel, (left_x - 6, 0))
+        backdrop.alpha_composite(right_panel, (right_x - 6, 0))
 
         if graph_source:
             chart = graph_source.resize(
@@ -516,15 +709,18 @@ class SeasonWheel:
             panel.alpha_composite(chart, (panel_padding, panel_padding))
             backdrop.alpha_composite(
                 panel,
-                ((width - panel_width) // 2, graph_y - panel_padding),
+                (
+                    left_x + (left_width - panel_width) // 2,
+                    graph_panel_y,
+                ),
             )
 
         self.page_photo = ImageTk.PhotoImage(backdrop.convert("RGB"), master=canvas)
         canvas.delete("all")
         canvas.create_image(0, 0, image=self.page_photo, anchor="nw")
-        for text_y, text, font, colour, wrap_width in text_items:
+        for text_x, text_y, text, font, colour, wrap_width in text_items:
             canvas.create_text(
-                margin,
+                text_x,
                 text_y,
                 text=text,
                 fill=colour,

@@ -1,3 +1,4 @@
+import calendar
 import tkinter as tk
 import math
 from datetime import datetime
@@ -13,6 +14,24 @@ from Moduals.Question_Modual import (
 )
 from Moduals.Security_Modual import SecurityModule
 from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
+
+_MONTH_NUMBERS = {
+    month.casefold(): number
+    for number in range(1, 13)
+    for month in (calendar.month_name[number], calendar.month_abbr[number])
+}
+
+
+def _parse_month(value):
+    normalized_value = value.strip().casefold()
+    try:
+        return int(normalized_value)
+    except ValueError:
+        month_number = _MONTH_NUMBERS.get(normalized_value.rstrip("."))
+        if month_number is None:
+            raise ValueError("Month must be a number or month name.")
+        return month_number
+
 
 REGION_IMAGE_FILES = {
     "Whadjuk": "Whadjuk.png",
@@ -198,6 +217,85 @@ SOURCE_ITEMS = (
         ),
         "url": "https://www.bom.gov.au/climate/cdo/about/about-airtemp-data.shtml",
     },
+    {
+        "title": "Edith Cowan University — Noongar Six Seasons",
+        "description": (
+            "Educational resource from Kurongkurl Katitjin about the Noongar "
+            "six-season calendar and its connections to Country."
+        ),
+        "url": (
+            "https://www.ecu.edu.au/centres/kurongkurl-katitjin/"
+            "cultural-leadership/nyoongar-six-seasons"
+        ),
+    },
+    {
+        "title": "Marine WATERs — Fact sheet: The Noongar Six Seasons",
+        "description": (
+            "Western Australian marine and aquatic education fact sheet "
+            "about the Noongar six seasons."
+        ),
+        "url": (
+            "https://marinewaters.fish.wa.gov.au/resource/"
+            "fact-sheet-the-noongar-six-seasons/?pdf_export=1"
+        ),
+    },
+    {
+        "title": "Tourism Western Australia — Aboriginal Noongar seasons",
+        "description": (
+            "Overview of the six Noongar seasons, their approximate months, "
+            "and seasonal observations in the South West."
+        ),
+        "url": (
+            "https://www.westernaustralia.com/au/things-to-do/"
+            "aboriginal-experiences/aboriginal-noongar-seasons"
+        ),
+    },
+    {
+        "title": "Aboriginal Six Seasons",
+        "description": (
+            "Noongar family-owned cultural and creative resource. Use as a "
+            "supplementary perspective alongside educational references and "
+            "local community guidance."
+        ),
+        "url": "https://www.aboriginalsixseasons.com.au/",
+    },
+    {
+        "title": "Perth NRM — Traditional Knowledge",
+        "description": (
+            "Resource about traditional knowledge and caring for Country."
+        ),
+        "url": "https://www.perthnrm.com/resource/traditional-knowledge/",
+    },
+    {
+        "title": "Yallingup Aboriginal Art — The Six Seasons of Noongar Country",
+        "description": (
+            "Overview of the six seasons and seasonal changes in Noongar "
+            "Country, shared by a local Aboriginal art business."
+        ),
+        "url": (
+            "https://yallingupaboriginalart.com.au/"
+            "the-six-seasons-of-noongar-country/"
+        ),
+    },
+    {
+        "title": "GESB — Noongar Six Seasons",
+        "description": (
+            "Introduction to the Noongar six seasons and their approximate "
+            "months."
+        ),
+        "url": (
+            "https://www.gesb.wa.gov.au/members/stand-alone-pages/"
+            "noongar-six-seasons"
+        ),
+    },
+    {
+        "title": "Botanic Gardens and Parks Authority — Noongar Boodja Six Seasons",
+        "description": (
+            "Western Australian Botanic Gardens and Parks Authority resource "
+            "about the six seasons on Noongar Boodja."
+        ),
+        "url": "https://www.bgpa.wa.gov.au/noongar-boodja-six-seasons",
+    },
 )
 
 
@@ -358,7 +456,10 @@ class NoongarSeasonApp:
         ).pack(pady=(18, 6))
         tk.Label(
             sources_window,
-            text="Data and references used by the application.",
+            text=(
+                "Data and references used by the application and for future "
+                "season information."
+            ),
             font=("Segoe UI", 11),
             fg="#4a4a4a",
             bg="#f4efe7",
@@ -861,7 +962,7 @@ class NoongarSeasonApp:
 
         result_label = tk.Label(
             result_panel,
-            text="Enter the day first, then the month (for example: 8, 10).",
+            text="Enter the day first, then the month (for example: 8, 10 or October).",
             font=("Segoe UI", 13),
             fg="#24381d",
             bg="#f7f3ee",
@@ -888,11 +989,14 @@ class NoongarSeasonApp:
 
             try:
                 day = int(entered_day)
-                month = int(entered_month)
+                month = _parse_month(entered_month)
                 parsed_date = datetime(2000, month, day)
             except ValueError:
                 result_label.configure(
-                    text="Enter a valid day first, followed by a month from 1 to 12."
+                    text=(
+                        "Enter a valid day and month. The month can be a number "
+                        "from 1 to 12 or a month name."
+                    )
                 )
                 more_button.configure(state="disabled")
                 return
