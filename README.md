@@ -14,7 +14,7 @@ python main.py
 ```
 
 In VS Code, select `.venv/bin/python` as the interpreter. Keep `Data/` and `modules/` beside `main.py`.
-
+Main.py can be run from Powershell,Terminal or Visual Studio Code
 ## Project layout
 
 - `main.py` starts the app and routes between features. `modules/` contains the

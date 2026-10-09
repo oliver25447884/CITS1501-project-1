@@ -48,3 +48,11 @@ Purpose: Record AI assistance, how suggestions were evaluated, and which changes
 ## Reflection
 
 The AI tools were used to suggest and implement code and interface changes, but tool output was not assumed to be correct automatically. The weather-data calculations were checked with automated tests, and the app was reviewed after changes. Copilot's graph session did not complete, so its failure is documented rather than presented as a successful result. The students should verify sources, confirm that cultural descriptions are appropriate for the places discussed, and be prepared to explain the submitted code.
+
+
+Oliver Tegg-Quinn
+1) Task. Create a display window, ensure that any information is easily editable
+2) Task. create an interactable wheel, interaction must open related information pages. Ensure information is easily editable 
+3) Task. (was to create the other moduals), prompts were very similar with only slight technical differences.
+4) Task. Cleanup code, remove unused/residue code, ensure all relevent code exists within the respective moduals.
+5) Task. Add in code anotations describing technical function.
