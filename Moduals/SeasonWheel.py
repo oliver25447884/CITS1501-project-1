@@ -491,7 +491,10 @@ class SeasonWheel:
         margin = min(34, max(20, int(width * 0.045)))
         column_gap = 28
         available_width = max(1, width - margin * 2 - column_gap)
-        left_width = int(available_width * 0.43)
+        original_left_width = int(available_width * 0.43)
+        original_graph_width = max(1, original_left_width - 24)
+        enlarged_graph_width = round(original_graph_width * 1.3)
+        left_width = max(original_left_width, enlarged_graph_width + 24)
         right_width = available_width - left_width
         left_x = margin
         right_x = left_x + left_width + column_gap
@@ -596,9 +599,9 @@ class SeasonWheel:
         )
         graph_source = self._open_image(graph_path)
         graph_width = (
-            min(max(1, left_width - 24), graph_source.width)
+            min(enlarged_graph_width, graph_source.width)
             if graph_source
-            else max(1, left_width - 24)
+            else enlarged_graph_width
         )
         graph_height = (
             round(graph_source.height * graph_width / graph_source.width)
