@@ -1,2 +1,8 @@
 # Local password and security-answer hashes
 .noongar_seasons_security.json
+
+# Keep generated Python files and local editor/runtime files out of the project view.
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/

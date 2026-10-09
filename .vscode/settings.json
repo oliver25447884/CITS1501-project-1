@@ -1,0 +1,14 @@
+{
+  "explorer.compactFolders": false,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.py[cod]": true,
+    "**/.DS_Store": true,
+    "**/.venv": true
+  },
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/*.py[cod]": true,
+    "**/.venv": true
+  }
+}

@@ -1,6 +1,8 @@
-import calendar
+"""Main window and page navigation for the Noongar Seasons app."""
+
 import tkinter as tk
 import math
+from datetime import datetime
 from pathlib import Path
 from fractions import Fraction
 from tkinter import ttk
@@ -11,37 +13,11 @@ from Moduals.Question_Modual import (
     display_question_answer,
     display_question_results,
 )
+from Moduals.ClimateData import annual_summary, load_climate_observations, monthly_summaries
 from Moduals.Security_Modual import SecurityModule
-from Moduals.SeasonQuiz import launch_season_quiz
 from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
-from Moduals.UI_Modual import rounded_panel
 
-_MONTH_NUMBERS = {
-    month.casefold(): number
-    for number in range(1, 13)
-    for month in (calendar.month_name[number], calendar.month_abbr[number])
-}
-
-
-def _parse_month(value):
-    normalized_value = value.strip().casefold()
-    try:
-        return int(normalized_value)
-    except ValueError:
-        month_number = _MONTH_NUMBERS.get(normalized_value.rstrip("."))
-        if month_number is None:
-            raise ValueError("Month must be a number or month name.")
-        return month_number
-
-
-def _parse_lookup_month(day_value, month_value):
-    day = int(day_value)
-    month = _parse_month(month_value)
-    if not 1 <= day <= 31 or not 1 <= month <= 12:
-        raise ValueError("Day and month must be in range.")
-    return month
-
-
+# Maps Noongar region names to the image files displayed by the council lookup.
 REGION_IMAGE_FILES = {
     "Whadjuk": "Whadjuk.png",
     "Yued": "Yued.png",
@@ -51,6 +27,7 @@ REGION_IMAGE_FILES = {
     "Wagyl Kaip & Southern Noongar": "Wagyl Kaip Southern Noongar.png",
 }
 
+# Question and answer content shown in the home page and the full Q&A page.
 FAQ_ITEMS = (
     {
         "season": "All seasons",
@@ -204,13 +181,23 @@ FAQ_ITEMS = (
     },
 )
 
+# References shown in the app's Sources window.
 SOURCE_ITEMS = (
+    {
+        "title": "Department of Primary Industries and Regional Development — The Noongar Six Seasons",
+        "description": (
+            "Public West Coast regional information on seasonal names, signs, "
+            "weather, plants, animals, and cultural practices. The app treats "
+            "this as one regional account, not a universal description."
+        ),
+        "url": "https://marinewaters.fish.wa.gov.au/resource/fact-sheet-the-noongar-six-seasons/",
+    },
     {
         "title": "Bureau of Meteorology — Climate Data Online",
         "description": (
-            "Daily rainfall and temperature data for Perth Metro, station "
-            "009225, for January to December 2024. The app uses these records "
-            "to calculate seasonal averages."
+            "Daily rainfall and maximum-temperature records for Perth Metro, "
+            "station 009225, in 2024. The climate summary view loads the CSV "
+            "files and calculates monthly means and totals."
         ),
         "url": "https://www.bom.gov.au/climate/data/",
     },
@@ -226,90 +213,14 @@ SOURCE_ITEMS = (
         ),
         "url": "https://www.bom.gov.au/climate/cdo/about/about-airtemp-data.shtml",
     },
-    {
-        "title": "Edith Cowan University — Noongar Six Seasons",
-        "description": (
-            "Educational resource from Kurongkurl Katitjin about the Noongar "
-            "six-season calendar and its connections to Country."
-        ),
-        "url": (
-            "https://www.ecu.edu.au/centres/kurongkurl-katitjin/"
-            "cultural-leadership/nyoongar-six-seasons"
-        ),
-    },
-    {
-        "title": "Marine WATERs — Fact sheet: The Noongar Six Seasons",
-        "description": (
-            "Western Australian marine and aquatic education fact sheet "
-            "about the Noongar six seasons."
-        ),
-        "url": (
-            "https://marinewaters.fish.wa.gov.au/resource/"
-            "fact-sheet-the-noongar-six-seasons/?pdf_export=1"
-        ),
-    },
-    {
-        "title": "Tourism Western Australia — Aboriginal Noongar seasons",
-        "description": (
-            "Overview of the six Noongar seasons, their approximate months, "
-            "and seasonal observations in the South West."
-        ),
-        "url": (
-            "https://www.westernaustralia.com/au/things-to-do/"
-            "aboriginal-experiences/aboriginal-noongar-seasons"
-        ),
-    },
-    {
-        "title": "Aboriginal Six Seasons",
-        "description": (
-            "Noongar family-owned cultural and creative resource. Use as a "
-            "supplementary perspective alongside educational references and "
-            "local community guidance."
-        ),
-        "url": "https://www.aboriginalsixseasons.com.au/",
-    },
-    {
-        "title": "Perth NRM — Traditional Knowledge",
-        "description": (
-            "Resource about traditional knowledge and caring for Country."
-        ),
-        "url": "https://www.perthnrm.com/resource/traditional-knowledge/",
-    },
-    {
-        "title": "Yallingup Aboriginal Art — The Six Seasons of Noongar Country",
-        "description": (
-            "Overview of the six seasons and seasonal changes in Noongar "
-            "Country, shared by a local Aboriginal art business."
-        ),
-        "url": (
-            "https://yallingupaboriginalart.com.au/"
-            "the-six-seasons-of-noongar-country/"
-        ),
-    },
-    {
-        "title": "GESB — Noongar Six Seasons",
-        "description": (
-            "Introduction to the Noongar six seasons and their approximate "
-            "months."
-        ),
-        "url": (
-            "https://www.gesb.wa.gov.au/members/stand-alone-pages/"
-            "noongar-six-seasons"
-        ),
-    },
-    {
-        "title": "Botanic Gardens and Parks Authority — Noongar Boodja Six Seasons",
-        "description": (
-            "Western Australian Botanic Gardens and Parks Authority resource "
-            "about the six seasons on Noongar Boodja."
-        ),
-        "url": "https://www.bgpa.wa.gov.au/noongar-boodja-six-seasons",
-    },
 )
 
 
 class NoongarSeasonApp:
+    """Build the app and connect its pages to the supporting modules."""
+
     def __init__(self, root):
+        """Keep the Tk window, set the visual theme, and show the start page."""
         self.root = root
         self.root.configure(bg="#f4efe7")
         self._configure_styles()
@@ -320,6 +231,7 @@ class NoongarSeasonApp:
         self.security.show_startup_page()
 
     def _configure_styles(self):
+        """Set shared button colors and spacing for a consistent interface."""
         style = ttk.Style(self.root)
         if "clam" in style.theme_names():
             style.theme_use("clam")
@@ -338,6 +250,7 @@ class NoongarSeasonApp:
         )
 
     def set_windowed_size(self, geometry, minimum_size):
+        """Size the window while keeping it within the available screen area."""
         requested_width, requested_height = map(int, geometry.split("x"))
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -348,22 +261,23 @@ class NoongarSeasonApp:
         self.root.minsize(min(minimum_size[0], width), min(minimum_size[1], height))
 
     def clear_page(self):
+        """Remove the current screen and create a clean frame for the next one."""
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = tk.Frame(self.root, bg="#f4efe7")
         self.current_frame.pack(fill="both", expand=True)
 
     def show_home_page(self):
+        """Build the home screen with season navigation, questions, and acknowledgement."""
         self.clear_page()
         self.root.title("Explore Noongar Seasons")
-        self.set_windowed_size("850x550", (700, 500))
+        self.set_windowed_size("850x620", (700, 540))
 
         ttk.Button(
             self.current_frame,
             text="Sources",
             command=self.show_sources_window,
         ).pack(anchor="nw", padx=4, pady=(0, 2))
-
         tk.Label(
             self.current_frame,
             text="Explore the Noongar Seasons",
@@ -374,7 +288,7 @@ class NoongarSeasonApp:
 
         tk.Label(
             self.current_frame,
-            text="Choose an activity below to learn more.",
+            text="A Perth-area guide to changing weather, plants, animals and Country.",
             font=("Segoe UI", 11),
             fg="#4a4a4a",
             bg="#f4efe7",
@@ -390,7 +304,7 @@ class NoongarSeasonApp:
         seasons_panel.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
         tk.Label(
             seasons_panel,
-            text="Explore the Noongar Seasons",
+            text="The six-season cycle",
             font=("Segoe UI", 16, "bold"),
             fg="#24381d",
             bg="#e7d8c4",
@@ -398,7 +312,7 @@ class NoongarSeasonApp:
         ).pack(pady=(55, 15))
         tk.Label(
             seasons_panel,
-            text="Visit the wheel of seasons and select a season to learn more.",
+            text="Choose a season to explore local signs and Perth weather.",
             font=("Segoe UI", 11),
             fg="#4a4a4a",
             bg="#e7d8c4",
@@ -410,17 +324,12 @@ class NoongarSeasonApp:
             text="Open wheel of seasons",
             command=self.season_wheel.show_information_page,
         ).pack()
-        ttk.Button(
-            seasons_panel,
-            text="Or test your knowledge",
-            command=lambda: launch_season_quiz(self.root),
-        ).pack(pady=(12, 0))
 
         region_panel = tk.Frame(content, bg="#f7f3ee", bd=1, relief="solid")
         region_panel.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         tk.Label(
             region_panel,
-            text="Common Questions",
+            text="Questions & answers",
             font=("Segoe UI", 16, "bold"),
             fg="#24381d",
             bg="#f7f3ee",
@@ -453,7 +362,28 @@ class NoongarSeasonApp:
             command=self.security.show_login_page,
         ).pack(pady=(12, 0))
 
+        ttk.Button(
+            self.current_frame,
+            text="Explore 2024 climate data",
+            command=self.show_climate_page,
+        ).pack(pady=(8, 0))
+
+        tk.Label(
+            self.current_frame,
+            text=(
+                "We acknowledge the Whadjuk Noongar people as the Traditional "
+                "Owners of the lands and waters where Perth is situated, and "
+                "pay our respects to Elders past and present."
+            ),
+            font=("Segoe UI", 9),
+            fg="#53624d",
+            bg="#f4efe7",
+            wraplength=780,
+            justify="center",
+        ).pack(fill="x", padx=25, pady=(7, 6))
+
     def show_sources_window(self):
+        """Open a scrollable window listing the sources used by the app."""
         sources_window = tk.Toplevel(self.root)
         sources_window.title("Sources | Noongar Seasons")
         sources_window.geometry("700x520")
@@ -470,10 +400,7 @@ class NoongarSeasonApp:
         ).pack(pady=(18, 6))
         tk.Label(
             sources_window,
-            text=(
-                "Data and references used by the application and for future "
-                "season information."
-            ),
+            text="Data and references used by the application.",
             font=("Segoe UI", 11),
             fg="#4a4a4a",
             bg="#f4efe7",
@@ -566,14 +493,234 @@ class NoongarSeasonApp:
             command=sources_window.destroy,
         ).pack(pady=(0, 14))
 
-    def show_questions_page(self):
+    def show_climate_page(self):
+        """Load the 2024 daily CSV records and show monthly climate analysis."""
         self.clear_page()
-        self.root.title("Common Questions | Noongar Seasons")
+        self.root.title("2024 Perth climate data | Noongar Seasons")
+        self.set_windowed_size("1050x760", (800, 620))
+
+        heading = tk.Label(
+            self.current_frame,
+            text="Perth climate in 2024",
+            font=("Segoe UI", 24, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+        )
+        heading.pack(pady=(15, 4))
+        tk.Label(
+            self.current_frame,
+            text=(
+                "Daily Bureau of Meteorology observations are loaded from the "
+                "project CSV files and summarized by month."
+            ),
+            font=("Segoe UI", 10),
+            fg="#4a4a4a",
+            bg="#f4efe7",
+            wraplength=900,
+            justify="center",
+        ).pack(padx=25, pady=(0, 12))
+
+        try:
+            records = load_climate_observations()
+            month_data = monthly_summaries(records)
+            year_data = annual_summary(records)
+        except (OSError, ValueError) as error:
+            tk.Label(
+                self.current_frame,
+                text=f"The climate data could not be loaded.\n{error}",
+                font=("Segoe UI", 11),
+                fg="#9a3e32",
+                bg="#f7f3ee",
+                wraplength=700,
+                justify="left",
+                padx=20,
+                pady=20,
+            ).pack(fill="x", padx=40, pady=20)
+            ttk.Button(
+                self.current_frame,
+                text="Back to explore",
+                command=self.show_home_page,
+            ).pack(pady=8)
+            return
+
+        summary_cards = tk.Frame(self.current_frame, bg="#f4efe7")
+        summary_cards.pack(fill="x", padx=24, pady=(2, 14))
+        metric_values = (
+            ("DAILY RECORDS", f"{year_data['record_days']}"),
+            (
+                "MEAN DAILY MAX",
+                f"{year_data['mean_maximum_temperature']:.1f} °C"
+                if year_data["mean_maximum_temperature"] is not None
+                else "No data",
+            ),
+            (
+                "TOTAL RAINFALL",
+                f"{year_data['rainfall_total']:.1f} mm"
+                if year_data["rainfall_total"] is not None
+                else "No data",
+            ),
+        )
+        for column, (label, value) in enumerate(metric_values):
+            summary_cards.columnconfigure(column, weight=1, uniform="year_metric")
+            card = tk.Frame(
+                summary_cards,
+                bg="#fffdf9",
+                highlightbackground="#e1d8ca",
+                highlightthickness=1,
+                padx=12,
+                pady=10,
+            )
+            card.grid(row=0, column=column, sticky="nsew", padx=5)
+            tk.Label(
+                card,
+                text=value,
+                font=("Segoe UI", 17, "bold"),
+                fg="#345c4c",
+                bg="#fffdf9",
+            ).pack(pady=(0, 4))
+            tk.Label(
+                card,
+                text=label,
+                font=("Segoe UI", 8, "bold"),
+                fg="#65715e",
+                bg="#fffdf9",
+            ).pack()
+
+        filter_bar = tk.Frame(self.current_frame, bg="#f4efe7")
+        filter_bar.pack(fill="x", padx=30, pady=(0, 8))
+        tk.Label(
+            filter_bar,
+            text="Filter by season:",
+            font=("Segoe UI", 10, "bold"),
+            fg="#24381d",
+            bg="#f4efe7",
+        ).pack(side="left", padx=(0, 8))
+        season_filter = tk.StringVar(value="All seasons")
+        ttk.Combobox(
+            filter_bar,
+            textvariable=season_filter,
+            values=("All seasons", *SEASONS.keys()),
+            state="readonly",
+            width=18,
+        ).pack(side="left")
+
+        table_frame = tk.Frame(self.current_frame, bg="#f4efe7")
+        table_frame.pack(fill="both", expand=True, padx=24)
+        columns = (
+            "month", "season", "days", "temperature_days", "mean_temp",
+            "rainy_days", "rainfall",
+        )
+        table = ttk.Treeview(
+            table_frame,
+            columns=columns,
+            show="headings",
+            height=12,
+        )
+        headings = {
+            "month": ("Month", 120),
+            "season": ("Perth season guide", 150),
+            "days": ("Days", 75),
+            "temperature_days": ("Temp. readings", 115),
+            "mean_temp": ("Mean max (°C)", 130),
+            "rainy_days": ("Rainy days", 95),
+            "rainfall": ("Rain total (mm)", 130),
+        }
+        for column, (label, width) in headings.items():
+            table.heading(column, text=label)
+            table.column(column, width=width, minwidth=70, anchor="center")
+        scrollbar = ttk.Scrollbar(
+            table_frame, orient="vertical", command=table.yview
+        )
+        table.configure(yscrollcommand=scrollbar.set)
+        table.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        season_colours = {
+            "Birak": "#fbf0e8", "Bunuru": "#f8f0e3", "Djeran": "#edf1e9",
+            "Makuru": "#eaf1f3", "Djilba": "#f2edf3", "Kambarang": "#f4f0e1",
+        }
+        for season_name, colour in season_colours.items():
+            table.tag_configure(season_name, background=colour)
+
+        result_note = tk.Label(
+            self.current_frame,
+            text="",
+            font=("Segoe UI", 9),
+            fg="#65715e",
+            bg="#f4efe7",
+        )
+        result_note.pack(pady=(6, 2))
+
+        def update_table(*_args):
+            """Refresh table rows to match the selected season filter."""
+            table.delete(*table.get_children())
+            selected = season_filter.get()
+            visible = [
+                item for item in month_data
+                if selected == "All seasons" or item["season"] == selected
+            ]
+            for item in visible:
+                mean_temp = item["mean_maximum_temperature"]
+                rain_total = item["rainfall_total"]
+                table.insert(
+                    "",
+                    "end",
+                    values=(
+                        item["month_name"],
+                        item["season"],
+                        item["record_days"],
+                        item["temperature_days"],
+                        f"{mean_temp:.1f}" if mean_temp is not None else "—",
+                        item["rainy_days"],
+                        f"{rain_total:.1f}" if rain_total is not None else "—",
+                    ),
+                    tags=(item["season"],),
+                )
+            result_note.configure(
+                text=(
+                    f"Showing {len(visible)} months from {year_data['record_days']} "
+                    "daily records. Double-click a row to open its season page."
+                )
+            )
+
+        def open_selected_season(_event=None):
+            """Open season details for the selected month's regional guide."""
+            selected_row = table.selection()
+            if selected_row:
+                season_name = table.item(selected_row[0], "values")[1]
+                self.show_season_page(season_name)
+
+        season_filter.trace_add("write", update_table)
+        update_table()
+        table.bind("<Double-1>", open_selected_season)
+
+        tk.Label(
+            self.current_frame,
+            text=(
+                "The season names are a Perth-area month guide. January and "
+                "December are listed separately because these records cover "
+                "the 2024 calendar year."
+            ),
+            font=("Segoe UI", 9),
+            fg="#65715e",
+            bg="#f4efe7",
+            wraplength=900,
+            justify="center",
+        ).pack(padx=20, pady=(0, 4))
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 10))
+
+    def show_questions_page(self):
+        """Show the expandable FAQ list, grouped by season and topic."""
+        self.clear_page()
+        self.root.title("Questions and answers | Noongar Seasons")
         self.set_windowed_size("850x760", (650, 550))
 
         tk.Label(
             self.current_frame,
-            text="Common Questions",
+            text="Questions & answers",
             font=("Segoe UI", 22, "bold"),
             fg="#24381d",
             bg="#f4efe7",
@@ -619,6 +766,7 @@ class NoongarSeasonApp:
         answer_labels = []
 
         def resize_questions(event):
+            """Keep question text readable as the list window is resized."""
             canvas.itemconfigure(questions_window, width=event.width)
             answer_wraplength = max(300, event.width - 90)
             for answer_label in answer_labels:
@@ -627,6 +775,7 @@ class NoongarSeasonApp:
         canvas.bind("<Configure>", resize_questions)
 
         def scroll_questions(event):
+            """Translate mouse-wheel input into movement through the FAQ list."""
             if getattr(event, "num", None) == 4:
                 direction = -1
             elif getattr(event, "num", None) == 5:
@@ -637,6 +786,7 @@ class NoongarSeasonApp:
             return "break"
 
         def bind_question_scrolling(widget):
+            """Enable scrolling when the pointer is over a question-list widget."""
             widget.bind("<MouseWheel>", scroll_questions)
             widget.bind("<Button-4>", scroll_questions)
             widget.bind("<Button-5>", scroll_questions)
@@ -683,6 +833,7 @@ class NoongarSeasonApp:
                 question=item["question"],
                 button_reference=button_reference,
             ):
+                """Expand or collapse this question's answer."""
                 question_button = button_reference["button"]
                 if label.winfo_manager():
                     label.pack_forget()
@@ -700,17 +851,18 @@ class NoongarSeasonApp:
             question_button.pack(fill="x", padx=6, pady=6)
             bind_question_scrolling(question_button)
 
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(10, 0))
+
     def show_question_page(self, question):
+        """Display an answer or open the council and season lookup screen."""
         self.clear_page()
         self.current_frame.pack_configure(pady=(20, 0))
         self.root.title("Question information")
         self.set_windowed_size("700x760", (550, 500))
-
-        ttk.Button(
-            self.current_frame,
-            text="Go back",
-            command=self.show_home_page,
-        ).pack(anchor="nw", padx=10, pady=(8, 0))
 
         if question.get("type") == "season_lookup":
             self.show_season_lookup()
@@ -720,6 +872,7 @@ class NoongarSeasonApp:
             display_question_answer(
                 self.current_frame,
                 question,
+                self.show_home_page,
             )
             return
 
@@ -784,6 +937,7 @@ class NoongarSeasonApp:
         }
 
         def show_region_images(regions, fallback_text):
+            """Resize matching region maps to fit the space available on screen."""
             image_width = image_placeholder.winfo_width()
             image_height = image_placeholder.winfo_height()
             if (
@@ -871,6 +1025,7 @@ class NoongarSeasonApp:
                 ).pack(side="bottom", fill="x")
 
         def update_region_result(event=None):
+            """Find councils that match the user's text and update the result."""
             council = search_entry.get().strip().casefold()
             matching_regions = [
                 region
@@ -890,7 +1045,9 @@ class NoongarSeasonApp:
                     )
                 )
             elif council:
-                result_label.config(text="Council not found in the Noongar council list.")
+                result_label.config(
+                    text="Council not found in the Noongar council list."
+                )
             else:
                 result_label.config(
                     text="Enter a council name to see your Noongar region."
@@ -903,6 +1060,7 @@ class NoongarSeasonApp:
             show_region_images(matching_regions, fallback_text)
 
         def resize_region_images(event):
+            """Redraw region maps when the image area changes size."""
             if image_state["size"] != (event.width, event.height):
                 show_region_images(
                     image_state["regions"], image_state["fallback_text"]
@@ -914,9 +1072,15 @@ class NoongarSeasonApp:
         search_entry.bind("<Return>", update_region_result)
         search_entry.focus_set()
 
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 8))
         image_placeholder.pack(fill="both", expand=True, padx=20, pady=0)
 
     def show_season_lookup(self):
+        """Let the user enter a day and month and find the matching season."""
         tk.Label(
             self.current_frame,
             text="Which Noongar season is it?",
@@ -970,7 +1134,7 @@ class NoongarSeasonApp:
 
         result_label = tk.Label(
             result_panel,
-            text="Enter the day first, then the month (for example: 8, 10 or October).",
+            text="Enter the day first, then the month (for example: 8, 10).",
             font=("Segoe UI", 13),
             fg="#24381d",
             bg="#f7f3ee",
@@ -986,6 +1150,7 @@ class NoongarSeasonApp:
         )
 
         def update_season_result(event=None):
+            """Validate the entered date and show its season and extra details."""
             entered_day = day_entry.get().strip()
             entered_month = month_entry.get().strip()
             if not entered_day or not entered_month:
@@ -996,18 +1161,17 @@ class NoongarSeasonApp:
                 return
 
             try:
-                month = _parse_lookup_month(entered_day, entered_month)
+                day = int(entered_day)
+                month = int(entered_month)
+                parsed_date = datetime(2000, month, day)
             except ValueError:
                 result_label.configure(
-                    text=(
-                        "Enter a day from 1 to 31 and a month from 1 to 12 "
-                        "or a month name."
-                    )
+                    text="Enter a valid day first, followed by a month from 1 to 12."
                 )
                 more_button.configure(state="disabled")
                 return
 
-            season_name = season_for_month(month)
+            season_name = season_for_month(parsed_date.month)
             season = SEASONS[season_name]
             result_label.configure(
                 text=(
@@ -1027,16 +1191,24 @@ class NoongarSeasonApp:
             date_entry.bind("<Return>", update_season_result)
         day_entry.focus_set()
 
+        ttk.Button(
+            self.current_frame,
+            text="Back to explore",
+            command=self.show_home_page,
+        ).pack(pady=(0, 8))
         more_button.pack(pady=(0, 8))
 
     def show_information_page(self):
+        """Open the interactive six-season wheel provided by SeasonWheel."""
         self.season_wheel.show_information_page()
 
     def show_season_page(self, season_name):
+        """Open detailed weather, nature, and cultural notes for one season."""
         self.season_wheel.show_season_page(season_name)
 
 
 if __name__ == "__main__":
+    # This guard starts the GUI only when this file is run as the main program.
     root = tk.Tk()
     app = NoongarSeasonApp(root)
     root.mainloop()

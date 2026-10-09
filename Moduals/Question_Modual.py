@@ -1,117 +1,46 @@
+"""Question and Noongar-region lookup content for the Noongar Seasons app."""
+
+import textwrap
+import tkinter as tk
+from tkinter import ttk
+
+
 # Councils are stored by Noongar region for the region lookup question.
+# These are indicative lookup associations, not definitive cultural boundaries.
 NOONGAR_REGIONS = {
     "Whadjuk": {
-        "Armadale",
-        "Bassendean",
-        "Bayswater",
-        "Belmont",
-        "Cambridge",
-        "Canning",
-        "Cockburn",
-        "Claremont",
-        "Cottesloe",
-        "Cottelsoe",
-        "East Fremantle",
-        "Fremantle",
-        "Gosnells",
-        "Joondalup",
-        "Kalamunda",
-        "Kwinana",
-        "Melville",
-        "Mosman Park",
-        "Mundaring",
-        "Nedlands",
-        "Perth",
-        "Rockingham",
-        "Serpentine-Jarrandale",
-        "Serpentine-Jarrahdale",
-        "South Perth",
-        "Stirling",
-        "Subiaco",
-        "Swan",
-        "Victoria Park",
-        "Vincent",
+        "Armadale", "Bassendean", "Bayswater", "Belmont", "Cambridge",
+        "Canning", "Cockburn", "Claremont", "Cottesloe", "Cottelsoe",
+        "East Fremantle", "Fremantle", "Gosnells", "Joondalup", "Kalamunda",
+        "Kwinana", "Melville", "Mosman Park", "Mundaring", "Nedlands",
+        "Perth", "Rockingham", "Serpentine-Jarrandale", "Serpentine-Jarrahdale",
+        "South Perth", "Stirling", "Subiaco", "Swan", "Victoria Park", "Vincent",
         "Wanneroo",
     },
-    "Yued": {
-        "Dandaragan",
-        "Gingin",
-        "Moora",
-        "Victoria Plains",
-    },
+    "Yued": {"Dandaragan", "Gingin", "Moora", "Victoria Plains"},
     "Ballardong": {
-        "Beverly",
-        "Beverley",
-        "Brookton",
-        "Bruce Rcok",
-        "Bruce Rock",
-        "Cunderdin",
-        "Dowerin",
-        "Goomalling",
-        "Kellerberrin",
-        "Kondinin",
-        "Koorda",
-        "Kulin",
-        "Merredin",
-        "Mount Marshall",
-        "Nungarin",
-        "Pingelly",
-        "Quairading",
-        "Tammin",
-        "Toodyay",
-        "Trayning",
-        "Westonia",
-        "Wickepin",
-        "Wongan-Ballidu",
-        "Wyalkatchem",
-        "Yilgarn",
-        "York",
-        "Corrigin",
-        "Cuballing",
-        "Dumbleyung",
-        "Lake Grace",
-        "Wandering",
-        "West Arthur",
-        "Williams",
-        "Wagin",
+        "Beverly", "Beverley", "Brookton", "Bruce Rcok", "Bruce Rock",
+        "Cunderdin", "Dowerin", "Goomalling", "Kellerberrin", "Kondinin",
+        "Koorda", "Kulin", "Merredin", "Mount Marshall", "Nungarin", "Pingelly",
+        "Quairading", "Tammin", "Toodyay", "Trayning", "Westonia", "Wickepin",
+        "Wongan-Ballidu", "Wyalkatchem", "Yilgarn", "York", "Corrigin", "Cuballing",
+        "Dumbleyung", "Lake Grace", "Wandering", "West Arthur", "Williams", "Wagin",
     },
     "Gnaala Karla Booja": {
-        "Mandurah",
-        "Bunbury",
-        "Capel",
-        "Collie",
-        "Donnybrook-Balingup",
-        "Dardanup",
-        "Harvy",
-        "Harvey",
+        "Mandurah", "Bunbury", "Capel", "Collie", "Donnybrook-Balingup",
+        "Dardanup", "Harvy", "Harvey",
     },
     "South West Boojarah": {
-        "Busselton",
-        "Augusta-Margaret River",
-        "Nannup",
-        "Manjimup",
-        "Boyup Brook",
+        "Busselton", "Augusta-Margaret River", "Nannup", "Manjimup", "Boyup Brook",
     },
     "Wagyl Kaip & Southern Noongar": {
-        "Albany",
-        "Denmark",
-        "Plantagenet",
-        "Cranbook",
-        "Cranbrook",
-        "Gnowangerup",
-        "Jerramungup",
-        "Katanning",
-        "Kojonup",
-        "Kent",
-        "Broomehill-Tambellup",
-        "Woodanilling",
-        "Ravensthorpe",
-        "Wagin",
-        "Walpole-Nornalup",
-        "Wandering",
+        "Albany", "Denmark", "Plantagenet", "Cranbook", "Cranbrook", "Gnowangerup",
+        "Jerramungup", "Katanning", "Kojonup", "Kent", "Broomehill-Tambellup",
+        "Woodanilling", "Ravensthorpe", "Wagin", "Walpole-Nornalup", "Wandering",
         "West Arthur",
     },
 }
+
 
 # Add or edit region questions and answers in this list.
 REGION_QUESTIONS = [
@@ -242,18 +171,28 @@ REGION_QUESTIONS = [
         ),
     },
 ]
-#An interactive map of perths subburbs will be placed here
-from Moduals.UI_Modual import rounded_panel
 
 
-def display_question_answer(answer_frame, question):
-    import tkinter as tk
-<<<<<<< HEAD
-    from tkinter import ttk
-    from Moduals.UI_Modual import enable_mousewheel_scrolling
-=======
->>>>>>> 990fef3903d3de196ccc5e03031928000075a371
+def _bind_mousewheel(widget, canvas):
+    """Add mouse-wheel scrolling to a widget/canvas pair on common platforms."""
+    def scroll(event):
+        if getattr(event, "num", None) == 4:
+            direction = -1
+        elif getattr(event, "num", None) == 5:
+            direction = 1
+        else:
+            delta = getattr(event, "delta", 0)
+            direction = -1 if delta > 0 else 1
+        canvas.yview_scroll(direction, "units")
+        return "break"
 
+    widget.bind("<MouseWheel>", scroll)
+    widget.bind("<Button-4>", scroll)
+    widget.bind("<Button-5>", scroll)
+
+
+def display_question_answer(answer_frame, question, back_to_questions=None):
+    """Display one answer and an optional button to return to the questions."""
     tk.Label(
         answer_frame,
         text=question["question"],
@@ -263,18 +202,24 @@ def display_question_answer(answer_frame, question):
         wraplength=600,
         justify="center",
     ).pack(padx=30, pady=(45, 25))
+
     if question.get("scrollable"):
-        answer_panel = tk.Frame(answer_frame, bg="#f7f3ee")
-        rounded_panel(answer_panel, "#f7f3ee", "#d8c8b4")
+        answer_panel = tk.Frame(
+            answer_frame,
+            bg="#f7f3ee",
+            highlightbackground="#d8c8b4",
+            highlightthickness=1,
+        )
         answer_panel.pack(fill="both", expand=True, padx=45, pady=(0, 20))
+
         answer_text = tk.Text(
             answer_panel,
-            font=("Segoe UI", 14),
+            font=("Segoe UI", 12),
             fg="#2b2b2b",
             bg="#f7f3ee",
             wrap="word",
-            padx=25,
-            pady=25,
+            padx=20,
+            pady=20,
             borderwidth=0,
             highlightthickness=0,
         )
@@ -286,12 +231,16 @@ def display_question_answer(answer_frame, question):
         answer_text.configure(yscrollcommand=answer_scrollbar.set)
         answer_text.insert("1.0", question["answer"])
         answer_text.configure(state="disabled")
-        answer_text.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
-        answer_scrollbar.pack(side="right", fill="y", padx=(0, 10), pady=10)
-        enable_mousewheel_scrolling(answer_panel, answer_text)
+        answer_text.pack(side="left", fill="both", expand=True, padx=(8, 0), pady=8)
+        answer_scrollbar.pack(side="right", fill="y", padx=(0, 8), pady=8)
+        _bind_mousewheel(answer_text, answer_text)
     else:
-        answer_panel = tk.Frame(answer_frame, bg="#f4efe7")
-        rounded_panel(answer_panel, "#f7f3ee", "#d8c8b4")
+        answer_panel = tk.Frame(
+            answer_frame,
+            bg="#f7f3ee",
+            highlightbackground="#d8c8b4",
+            highlightthickness=1,
+        )
         answer_panel.pack(fill="x", padx=45, pady=(0, 20))
         tk.Label(
             answer_panel,
@@ -303,56 +252,43 @@ def display_question_answer(answer_frame, question):
             justify="left",
             padx=25,
             pady=25,
-<<<<<<< HEAD
         ).pack(fill="x", padx=4, pady=4)
-    ttk.Button(
-        answer_frame,
-        text="Back to explore",
-        command=back_to_questions,
-    ).pack(pady=(0, 8))
+
+    if back_to_questions is not None:
+        ttk.Button(
+            answer_frame,
+            text="Back to explore",
+            command=back_to_questions,
+        ).pack(pady=(0, 8))
 
 
-=======
-        ).pack(fill="x", padx=45, pady=(0, 20))
->>>>>>> 990fef3903d3de196ccc5e03031928000075a371
 def display_question_results(results_frame, questions, open_question):
-    import tkinter as tk
-    import textwrap
-    from tkinter import ttk
-    from Moduals.UI_Modual import enable_mousewheel_scrolling
-
+    """Show question buttons inside a scrollable panel."""
     for child in results_frame.winfo_children():
         child.destroy()
 
-    canvas = tk.Canvas(
-        results_frame,
-        bg="#ffffff",
-        highlightthickness=0,
-    )
-    scrollbar = ttk.Scrollbar(
-        results_frame,
-        orient="vertical",
-        command=canvas.yview,
-    )
+    canvas = tk.Canvas(results_frame, bg="#ffffff", highlightthickness=0)
+    scrollbar = ttk.Scrollbar(results_frame, orient="vertical", command=canvas.yview)
     canvas.configure(yscrollcommand=scrollbar.set)
     canvas.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
 
     questions_frame = tk.Frame(canvas, bg="#ffffff")
     questions_window = canvas.create_window(
-        (0, 0),
-        window=questions_frame,
-        anchor="nw",
+        (0, 0), window=questions_frame, anchor="nw"
     )
 
-    def update_scroll_region(event=None):
+    def update_scroll_region(_event=None):
         canvas.configure(scrollregion=canvas.bbox("all"))
 
     def resize_questions(event):
         canvas.itemconfigure(questions_window, width=event.width)
+        update_scroll_region()
 
     questions_frame.bind("<Configure>", update_scroll_region)
     canvas.bind("<Configure>", resize_questions)
+    _bind_mousewheel(canvas, canvas)
+    _bind_mousewheel(questions_frame, canvas)
 
     if not questions:
         tk.Label(
@@ -362,26 +298,25 @@ def display_question_results(results_frame, questions, open_question):
             bg="#ffffff",
             fg="#2b2b2b",
         ).pack(pady=15)
-    else:
-        current_section = None
-        for item in questions:
-            section = item.get("season", "General questions")
-            if section != current_section:
-                current_section = section
-                section_label = tk.Label(
-                    questions_frame,
-                    text=section,
-                    font=("Segoe UI", 10, "bold"),
-                    fg="#24381d",
-                    bg="#ffffff",
-                )
-                section_label.pack(anchor="w", padx=10, pady=(10, 3))
+        return
 
-            question_button = ttk.Button(
+    current_section = None
+    for item in questions:
+        section = item.get("season", "General questions")
+        if section != current_section:
+            current_section = section
+            tk.Label(
                 questions_frame,
-                text=textwrap.fill(item["question"], width=38),
-                command=lambda question=item: open_question(question),
-            )
-            question_button.pack(fill="x", padx=10, pady=3)
+                text=section,
+                font=("Segoe UI", 10, "bold"),
+                fg="#24381d",
+                bg="#ffffff",
+            ).pack(anchor="w", padx=10, pady=(10, 3))
 
-    enable_mousewheel_scrolling(results_frame.master, canvas)
+        question_button = ttk.Button(
+            questions_frame,
+            text=textwrap.fill(item["question"], width=38),
+            command=lambda selected_question=item: open_question(selected_question),
+        )
+        question_button.pack(fill="x", padx=10, pady=3)
+        _bind_mousewheel(question_button, canvas)
