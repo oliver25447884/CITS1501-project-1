@@ -1,7 +1,6 @@
 import calendar
 import tkinter as tk
 import math
-from datetime import datetime
 from pathlib import Path
 from fractions import Fraction
 from tkinter import ttk
@@ -13,6 +12,7 @@ from Moduals.Question_Modual import (
     display_question_results,
 )
 from Moduals.Security_Modual import SecurityModule
+from Moduals.SeasonQuiz import launch_season_quiz
 from Moduals.SeasonWheel import SEASONS, SeasonWheel, season_for_month
 
 _MONTH_NUMBERS = {
@@ -31,6 +31,14 @@ def _parse_month(value):
         if month_number is None:
             raise ValueError("Month must be a number or month name.")
         return month_number
+
+
+def _parse_lookup_month(day_value, month_value):
+    day = int(day_value)
+    month = _parse_month(month_value)
+    if not 1 <= day <= 31 or not 1 <= month <= 12:
+        raise ValueError("Day and month must be in range.")
+    return month
 
 
 REGION_IMAGE_FILES = {
@@ -401,12 +409,17 @@ class NoongarSeasonApp:
             text="Open wheel of seasons",
             command=self.season_wheel.show_information_page,
         ).pack()
+        ttk.Button(
+            seasons_panel,
+            text="Or test your knowledge",
+            command=lambda: launch_season_quiz(self.root),
+        ).pack(pady=(12, 0))
 
         region_panel = tk.Frame(content, bg="#f7f3ee", bd=1, relief="solid")
         region_panel.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         tk.Label(
             region_panel,
-            text="Questions & answers",
+            text="Common Questions",
             font=("Segoe UI", 16, "bold"),
             fg="#24381d",
             bg="#f7f3ee",
@@ -554,12 +567,12 @@ class NoongarSeasonApp:
 
     def show_questions_page(self):
         self.clear_page()
-        self.root.title("Questions and answers | Noongar Seasons")
+        self.root.title("Common Questions | Noongar Seasons")
         self.set_windowed_size("850x760", (650, 550))
 
         tk.Label(
             self.current_frame,
-            text="Questions & answers",
+            text="Common Questions",
             font=("Segoe UI", 22, "bold"),
             fg="#24381d",
             bg="#f4efe7",
@@ -686,17 +699,17 @@ class NoongarSeasonApp:
             question_button.pack(fill="x", padx=6, pady=6)
             bind_question_scrolling(question_button)
 
-        ttk.Button(
-            self.current_frame,
-            text="Back to explore",
-            command=self.show_home_page,
-        ).pack(pady=(10, 0))
-
     def show_question_page(self, question):
         self.clear_page()
         self.current_frame.pack_configure(pady=(20, 0))
         self.root.title("Question information")
         self.set_windowed_size("700x760", (550, 500))
+
+        ttk.Button(
+            self.current_frame,
+            text="Go back",
+            command=self.show_home_page,
+        ).pack(anchor="nw", padx=10, pady=(8, 0))
 
         if question.get("type") == "season_lookup":
             self.show_season_lookup()
@@ -706,7 +719,6 @@ class NoongarSeasonApp:
             display_question_answer(
                 self.current_frame,
                 question,
-                self.show_home_page,
             )
             return
 
@@ -901,11 +913,6 @@ class NoongarSeasonApp:
         search_entry.bind("<Return>", update_region_result)
         search_entry.focus_set()
 
-        ttk.Button(
-            self.current_frame,
-            text="Back to explore",
-            command=self.show_home_page,
-        ).pack(pady=(0, 8))
         image_placeholder.pack(fill="both", expand=True, padx=20, pady=0)
 
     def show_season_lookup(self):
@@ -988,20 +995,18 @@ class NoongarSeasonApp:
                 return
 
             try:
-                day = int(entered_day)
-                month = _parse_month(entered_month)
-                parsed_date = datetime(2000, month, day)
+                month = _parse_lookup_month(entered_day, entered_month)
             except ValueError:
                 result_label.configure(
                     text=(
-                        "Enter a valid day and month. The month can be a number "
-                        "from 1 to 12 or a month name."
+                        "Enter a day from 1 to 31 and a month from 1 to 12 "
+                        "or a month name."
                     )
                 )
                 more_button.configure(state="disabled")
                 return
 
-            season_name = season_for_month(parsed_date.month)
+            season_name = season_for_month(month)
             season = SEASONS[season_name]
             result_label.configure(
                 text=(
@@ -1021,11 +1026,6 @@ class NoongarSeasonApp:
             date_entry.bind("<Return>", update_season_result)
         day_entry.focus_set()
 
-        ttk.Button(
-            self.current_frame,
-            text="Back to explore",
-            command=self.show_home_page,
-        ).pack(pady=(0, 8))
         more_button.pack(pady=(0, 8))
 
     def show_information_page(self):

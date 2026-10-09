@@ -14,13 +14,12 @@ SEASONS = {
         "description": "Birak is a hot, dry part of the year around Perth, with long daylight hours and strong sunshine. Rainfall is usually low and inland areas can become very warm, while afternoon sea breezes may bring some relief near the coast.",
         "meaning": "In this local guide, Birak marks the transition into summer conditions. Heat, available water, and changes in plants and animal activity are useful things to notice, while recognising that conditions vary from year to year and place to place.",
         "flora": (
-            ("Grass trees (Xanthorrhoea spp.)", "Their tall flower spikes can provide food for insects and other animals in warmer months; flowering varies by species and year."),
-            ("Banksias (Banksia spp.)", "Some species may flower across different parts of the year, providing nectar when in bloom."),
+            ("Honky nuts", "In Birak, honky nuts drop, providing a seasonal food source for cockatoos."),
         ),
         "fauna": (
-            ("Bobtail skink", "May bask in mild conditions and shelter when the ground is very hot."),
-            ("Western grey kangaroo", "Often forages in open areas during cooler parts of the day."),
-            ("Osprey", "May be seen around suitable coastal and estuary habitats."),
+            ("Cockatoos", "In Birak, cockatoos feed on the fallen honky nuts."),
+            ("Fledgling birds", "Birak is described as a time when young birds take flight."),
+            ("Reptiles and young frogs", "In Birak's warming conditions, reptiles shed their skins and young frogs develop toward adulthood."),
         ),
     },
     "Bunuru": {
@@ -28,13 +27,12 @@ SEASONS = {
         "description": "Bunuru is commonly the hottest and driest stretch of the year around Perth. Long, sunny days and little rain can leave soils and vegetation dry; coastal breezes and shade can make a noticeable difference.",
         "meaning": "This is a useful time to observe how plants and animals respond to heat and limited water. The timing and severity of hot, dry conditions differ between years, so these are seasonal tendencies rather than fixed rules.",
         "flora": (
-            ("Banksias (Banksia spp.)", "Flowering and seed cycles differ between species; flowers, when present, can provide nectar."),
-            ("Native grasses and shrubs", "Many reduce visible growth or conserve water during hot, dry weather."),
+            ("Jarrah, marri, and ghost gums", "In Bunuru, these trees are described as flowering with white blossoms."),
+            ("Female zamia cones", "During Bunuru, female zamia cones ripen from green to bright red."),
         ),
         "fauna": (
-            ("Western grey kangaroo", "May rest in shade and feed more during cooler hours."),
-            ("Bobtail skink", "Uses shelter to avoid the hottest conditions."),
-            ("Black swan", "Can be observed on suitable wetlands and estuaries throughout the year."),
+            ("Emus (weitj)", "In Bunuru, emus are attracted to the bright red, ripening zamia cones."),
+            ("Coastal and estuary foods", "Bunuru's warm, dry conditions are associated with Noongar people staying near coasts, rivers, and estuaries and gathering seafood."),
         ),
     },
     "Djeran": {
@@ -42,13 +40,13 @@ SEASONS = {
         "description": "Djeran brings a gradual move away from summer heat. Cooler mornings and evenings become more noticeable, winds change, and the first seasonal rains may begin to affect the ground and local waterways.",
         "meaning": "Djeran is a time of transition in this local seasonal guide. Watching for cooler weather, changing water levels, and the response of plants and animals can reveal how the environment is shifting toward the wetter months.",
         "flora": (
-            ("Jarrah (Eucalyptus marginata)", "A characteristic local woodland tree; flowering time varies with location and year."),
-            ("Banksias (Banksia spp.)", "Different species flower at different times, and their response to seasonal conditions is not uniform."),
+            ("Red flowering gum and Summer Flame", "During Djeran, their red flowers are seasonal signs of the cooler change."),
+            ("Sheoaks", "Around Perth in Djeran, sheoaks develop reddish foliage and seed cones."),
+            ("Banksias", "Banksias bloom in Djeran, providing nectar for small mammals and birds."),
         ),
         "fauna": (
-            ("Black swan", "A familiar waterbird on suitable wetlands, estuaries, and lakes."),
-            ("Quenda", "Forages among leaf litter and dense vegetation, usually at night."),
-            ("Carnaby's black-cockatoo", "Uses suitable woodland and feeding habitat across the south-west."),
+            ("Small mammals and birds", "In Djeran, they can feed on nectar from blooming banksias."),
+            ("Salmon", "Djeran is associated with the beginning of the salmon run."),
         ),
     },
     "Makuru": {
@@ -56,13 +54,13 @@ SEASONS = {
         "description": "Makuru is generally the coldest and wettest part of the year around Perth. Cold fronts and rainfall become more frequent, replenishing soils, wetlands, and waterways, although rainfall totals vary from year to year.",
         "meaning": "The wetter conditions shape what can be observed across the landscape. Changes in water, shelter, and food availability influence plants and wildlife, but no single sign appears everywhere or in every year.",
         "flora": (
-            ("Wetland sedges and rushes", "Grow in suitable damp habitats, where winter rain can replenish water and soil moisture."),
-            ("Paperbarks (Melaleuca spp.)", "Can be found around suitable wetland and damp habitats; local species and flowering times vary."),
+            ("Blueberry lilies", "In Makuru, their blue flowers are among the seasonal blooms described for the wet winter landscape."),
+            ("Purple flags", "Makuru's wet season is associated with their purple flowers, signalling the approach of Djilba."),
         ),
         "fauna": (
-            ("Motorbike frog", "A south-west wetland frog; calling and breeding activity can increase after rain."),
-            ("Black swan", "May be seen on wetlands and estuaries; observe from a respectful distance."),
-            ("Western grey kangaroo", "Uses open woodland and grassy habitats across the region."),
+            ("Black swans", "During Makuru, black swans prepare to nest."),
+            ("Breeding animals", "Makuru is described as a time when animals pair up to breed."),
+            ("Kangaroos", "In Makuru, movement inland and hunting kangaroos are described as seasonal practices as food sources shift from sea to land."),
         ),
     },
     "Djilba": {
@@ -70,14 +68,13 @@ SEASONS = {
         "description": "Djilba is a changeable transition from winter toward spring. Cool, wet days may alternate with warmer weather, and early signs of new growth and flowering begin to appear in parts of the south-west.",
         "meaning": "The seasonal shift is gradual rather than a fixed date on the calendar. New flowers, warmer spells, and changes in animal activity can be noticed, with their timing depending on local conditions.",
         "flora": (
-            ("Kangaroo paws (Anigozanthos spp.)", "Some species begin flowering around the transition into spring; timing varies by species and location."),
-            ("Banksias (Banksia spp.)", "Some species flower during the cooler-to-warmer transition, providing food when in bloom."),
-            ("Early wildflowers", "The first flowers may appear in suitable local habitats; avoid picking or trampling them."),
+            ("Golden Acacia", "Djilba's first wildflower blooms are described as beginning with Golden Acacia."),
+            ("Balgas", "During Djilba, balgas prepare for Kambarang as their flower stalks begin to unfurl."),
         ),
         "fauna": (
-            ("Quenda", "Forages among leaf litter and dense vegetation, usually at night."),
-            ("Motorbike frog", "May be heard near suitable wetland habitat after rain."),
-            ("Carnaby's black-cockatoo", "Moves between feeding and roosting sites across suitable habitat."),
+            ("Kangaroos, emus, and possums (koomal)", "Djilba's land-based seasonal foods are described as sustaining people as the weather warms."),
+            ("Newborn animals", "During Djilba, young animals are described as learning from their parents as warmth returns."),
+            ("Woodland birds", "In Djilba, woodland birds guard their nests."),
         ),
     },
     "Kambarang": {
@@ -85,15 +82,14 @@ SEASONS = {
         "description": "Kambarang brings warmer spring weather and especially noticeable flowering in many parts of the south-west. As the season progresses, the landscape moves toward the hotter, drier months.",
         "meaning": "Flowering plants and the wildlife that feed around them can be striking seasonal observations. The display differs by habitat, species, and year; stay on paths and leave flowers and wildlife undisturbed.",
         "flora": (
-            ("Banksias (Banksia spp.)", "Many species flower at different times and provide nectar for wildlife."),
-            ("Kangaroo paws (Anigozanthos spp.)", "Their bright flowers are a familiar spring feature in parts of the south-west."),
-            ("Everlastings", "Seasonal displays can occur in suitable locations as warmer conditions arrive."),
+            ("Acacias, banksias, and kangaroo paws", "Kambarang is associated with these plants flowering and adding colour to the landscape."),
+            ("Balgas", "In Kambarang, balgas are described as blooming after fires."),
+            ("Moodjar tree", "Its orange-yellow flowers are described as a seasonal sign of the approaching heat in Kambarang."),
         ),
         "fauna": (
-            ("Carnaby's black-cockatoo", "Feeds on seeds and native plants in suitable habitat."),
-            ("Western honey possum", "A nectar-feeder of south-west heathland; found only where suitable habitat is present."),
-            ("Splendid fairy-wren", "A small bushland bird that is best watched quietly from a distance."),
-            ("Native bees and honeyeaters", "May feed around flowering plants when nectar and pollen are available."),
+            ("Snakes", "As Kambarang warms in October, snakes become active."),
+            ("Young birds and magpies", "During Kambarang, young birds call for food while magpies guard them."),
+            ("Reptiles", "Warmer, sunnier Kambarang conditions are associated with reptiles stirring from dormancy."),
         ),
     },
 }
@@ -555,7 +551,10 @@ class SeasonWheel:
             right_width,
             "right",
         )
-        flora_text = "\n".join(f"- {name}: {detail}" for name, detail in season["flora"])
+        flora_text = "\n".join(
+            f"- {name}: {detail}"
+            for name, detail in season["flora"]
+        )
         add_text(flora_text, body_font, "#ffffff", 16, right_x, right_width, "right")
         add_text(
             "FAUNA EXAMPLES",
@@ -566,7 +565,10 @@ class SeasonWheel:
             right_width,
             "right",
         )
-        fauna_text = "\n".join(f"- {name}: {detail}" for name, detail in season["fauna"])
+        fauna_text = "\n".join(
+            f"- {name}: {detail}"
+            for name, detail in season["fauna"]
+        )
         add_text(fauna_text, body_font, "#ffffff", 5, right_x, right_width, "right")
         add_text(
             "Examples are general observations, not fixed seasonal indicators; "
@@ -589,7 +591,7 @@ class SeasonWheel:
         graph_path = (
             Path(__file__).resolve().parent.parent
             / "Data"
-            / "Regions"
+            / "Noongar season graphs"
             / SEASON_GRAPH_FILES[season_name]
         )
         graph_source = self._open_image(graph_path)
@@ -660,7 +662,7 @@ class SeasonWheel:
         photo_path = (
             Path(__file__).resolve().parent.parent
             / "Data"
-            / "Regions"
+            / "Flora Fauna"
             / SEASON_IMAGE_FILES[season_name]
         )
         photo_source = self._open_image(photo_path)

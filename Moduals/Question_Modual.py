@@ -245,9 +245,8 @@ REGION_QUESTIONS = [
 #An interactive map of perths subburbs will be placed here
 
 
-def display_question_answer(answer_frame, question, back_to_questions):
+def display_question_answer(answer_frame, question):
     import tkinter as tk
-    from tkinter import ttk
 
     tk.Label(
         answer_frame,
@@ -294,13 +293,6 @@ def display_question_answer(answer_frame, question, back_to_questions):
             padx=25,
             pady=25,
         ).pack(fill="x", padx=45, pady=(0, 20))
-    ttk.Button(
-        answer_frame,
-        text="Back to explore",
-        command=back_to_questions,
-    ).pack(pady=(0, 8))
-
-
 def display_question_results(results_frame, questions, open_question):
     import tkinter as tk
     import textwrap
